@@ -22,13 +22,38 @@ const player = {
     y: 100,
     health: 100,
     speed: 10,
+	coins: 0,
+	firerate: 50,
+	lastshot: 0,
     currentRoomId: 13,
     cycle: 1 //How many maps player has seen/played
+
 }
 
 const keys = [];
 document.addEventListener("keydown", (e) => { keys[e.key.toLowerCase()] = true; });
 document.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
+
+const mouse = {
+	x: 0,
+	y: 0,
+	down: false,
+};
+
+const playerProjectiles = [];
+
+document.addEventListener("mousedown", () => {
+	mouse.down = true;
+});
+document.addEventListener("mouseup", () => {
+	mouse.down = false;
+});
+
+gameCanvas.addEventListener("mousemove", (e) => {
+	const rect = gameCanvas.getBoundingClientRect();
+	mouse.x = e.clientX - rect.left;
+	mouse.y = e.clientY - rect.top;
+});
 
 // Draw Screen
 function drawMap() {
@@ -54,6 +79,14 @@ function drawGame() {
     gameCtx.clearRect(0, 0, 250, 250)
     gameCtx.fillStyle = "rgb(210 210 210)";
     gameCtx.fillRect(0, 0, 500, 500);
+
+	// Player Projectiles
+	for (let i = 0; i < playerProjectiles.length; i++) {
+		gameCtx.fillStyle = "rgb(0 0 0)";
+		gameCtx.beginPath();
+		gameCtx.arc(playerProjectiles[i].x, playerProjectiles[i].y, 5, 0, Math.PI * 2);
+		gameCtx.fill();
+	}
 
     // Player (guess who's back)
     gameCtx.fillStyle = "rgb(240 50 50)";
@@ -233,6 +266,38 @@ function playerWallCollision() {
     requestAnimationFrame(playerWallCollision)
 }
 
+function createBullet() {
+	if (player.lastshot <= 0) {
+		if (mouse.down) {
+			playerProjectiles.push({
+				x: player.x + 25,
+				y: player.y +25,
+				angle: Math.atan2(mouse.y - (player.y + 25), mouse.x - (player.x + 25)),
+				speed: 7,
+			});
+			player.lastshot = player.firerate;
+			drawGame();
+			console.log(playerProjectiles.length);
+		}
+	} else {
+		player.lastshot--;
+		console.log(player.lastshot);
+	}
+
+	requestAnimationFrame(createBullet);
+}
+
+function moveProjectiles() {
+	for (let i = 0; i < playerProjectiles.length; i++) {
+		playerProjectiles[i].x += 
+			Math.cos(playerProjectiles[i].angle) * playerProjectiles[i].speed;
+		playerProjectiles[i].y +=
+			Math.sin(playerProjectiles[i].angle) * playerProjectiles[i].speed;
+	}
+	drawGame();
+	requestAnimationFrame(moveProjectiles);
+}
+
 
 //Here
 /* function draw(timestamp) {
@@ -244,11 +309,12 @@ function playerWallCollision() {
 requestAnimationFrame(draw); */
 
 // Call Functions
-makeMap()
-drawGame()
-requestAnimationFrame(playerMovement)
-requestAnimationFrame(playerWallCollision)
-
+makeMap();
+drawGame();
+requestAnimationFrame(playerMovement);
+requestAnimationFrame(playerWallCollision);
+requestAnimationFrame(createBullet);
+requestAnimationFrame(moveProjectiles)
 
 
 // To do list:
