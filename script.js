@@ -261,6 +261,18 @@ function playerWallCollision() {
             }
         }
     }
+	if (player.x < -50) {
+		player.x = 0;
+	}
+	if (player.x > 500) {
+		player.x = 450;
+	}
+	if (player.y < -50) {
+		player.y = 0;
+	}
+	if (player.y > 500) {
+		player.y = 450;
+	}
 
     drawMap()
     requestAnimationFrame(playerWallCollision)
@@ -323,3 +335,4 @@ requestAnimationFrame(moveProjectiles)
 // working shop
 // enemy health and collision with bullets (dear god)
 // upgrades array
+
