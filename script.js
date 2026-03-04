@@ -255,7 +255,7 @@ function addSpawn() {
 function addShop() {
 	let xPosition = Math.floor(Math.random() * 5);
 	let yPosition = Math.floor(Math.random() * 5);
-	if (map[xPosition][yPosition].type == "empty") {
+	if (map[yPosition][xPosition].type == "empty") {
 		map[yPosition].splice(xPosition, 1, {
 			id: map[yPosition][xPosition].id,
 			color: `rgb(255, 255, 100)`,
@@ -270,7 +270,7 @@ function addShop() {
 function addExit() {
 	let xPosition = Math.floor(Math.random() * 5);
 	let yPosition = Math.floor(Math.random() * 5);
-	if (map[xPosition][yPosition].type == "empty") {
+	if (map[yPosition][xPosition].type == "empty") {
 		map[yPosition].splice(xPosition, 1, {
 			id: map[yPosition][xPosition].id,
 			color: `rgb(100, 255, 100)`,
@@ -285,7 +285,7 @@ function addExit() {
 function addElite() {
 	let xPosition = Math.floor(Math.random() * 5);
 	let yPosition = Math.floor(Math.random() * 5);
-	if (map[xPosition][yPosition].type == "empty") {
+	if (map[yPosition][xPosition].type == "empty") {
 		map[yPosition].splice(xPosition, 1, {
 			id: map[yPosition][xPosition].id,
 			color: `rgb(255, 100, 100)`,
