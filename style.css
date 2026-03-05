@@ -12,3 +12,9 @@
     /* top: calc(40vh - 250px); */
     /* left: calc(50vw - 500px); */
 }
+#displayHealth {
+    position: absolute;
+    top: 700px;
+    left: calc(50vw - 500px); 
+    font-size: 48px;
+}
