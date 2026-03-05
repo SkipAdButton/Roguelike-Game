@@ -10,12 +10,13 @@ let eliteNum = 0;
 let percent = 0;
 
 const map = [[], [], [], [], []];
-let roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})`
+let roomFloorColor = `rgb(200 200 200)`
 
 const player = {
 	x: 100,
 	y: 100,
-	health: 100,
+	health: 6,
+	maxHealth: 6,
 	speed: 7,
 	coins: 0,
 	firerate: 14,
@@ -23,6 +24,8 @@ const player = {
 	lastshot: 0,
 	currentRoomId: 13,
 	lastRoomId: 13,
+	iframes: 0,
+	allowedIFrames: 30,
 	cycle: 1, //How many maps player has seen/played
 };
 
@@ -369,6 +372,32 @@ function playerMovement() {
 	requestAnimationFrame(playerMovement);
 }
 
+function healthCheck(change) {
+	if (player.iframes == 0) {
+		player.health += change
+		document.getElementById("displayHealth").innerHTML = ""
+		for (let i = 0; i < player.health; i++) {
+			document.getElementById("displayHealth").innerHTML += "❤️"
+		}
+		for (let i = 0; i < player.maxHealth - player.health; i++) {
+			document.getElementById("displayHealth").innerHTML += "🖤"
+		}
+		player.iframes = player.allowedIFrames;
+	}
+	if (player.health <= 0) {
+		player.health = 0
+	}
+	console.log("healthCheck ran " + player.health + " change: " + change)
+}
+
+function iframeCheck() {
+	if (player.iframes > 0) {
+		player.iframes -= 1
+		console.log("iframeCheck ran " + player.iframes)
+	}
+	requestAnimationFrame(iframeCheck)
+}
+
 // oh boy
 function playerWallCollision() {
 	currentRoom = findCurrentRoom();
@@ -473,7 +502,7 @@ function playerWallCollision() {
 function onRoomChange() {
 	if (player.currentRoomId != player.lastRoomId) {
 		playerProjectiles = []
-		roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})`
+		/* roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})` */
 		player.lastRoomId = player.currentRoomId
 		drawGame()
 		drawMap()
@@ -612,9 +641,20 @@ function projEnemyCol() {
 	requestAnimationFrame(projEnemyCol);
 }
 
+function playerEnemyCol() {
+	for (let i = 0; i < enemies.length; i++) {
+		if (player.x + 25 > enemies[i].x && player.x + 25 < enemies[i].x + 50 && player.y + 25 > enemies[i].y && player.y + 25 < enemies[i].y + 50) {
+			healthCheck(-1)
+		}
+	}
+	requestAnimationFrame(playerEnemyCol)
+}
+
+
 // Call Functions
 makeMap();
 drawGame();
+requestAnimationFrame(iframeCheck)
 requestAnimationFrame(playerMovement);
 requestAnimationFrame(playerWallCollision);
 requestAnimationFrame(createProjectile);
@@ -622,10 +662,9 @@ requestAnimationFrame(moveProjectiles);
 requestAnimationFrame(moveEnemies);
 requestAnimationFrame(projEnemyCol);
 requestAnimationFrame(onRoomChange)
+requestAnimationFrame(playerEnemyCol)
 
 // To do list:
-// enemies
-//items
 // working shop
 // enemy health and collision with bullets (dear god)
 // upgrades array
