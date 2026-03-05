@@ -35,12 +35,16 @@ let itemsEquipt = 0;
 
 const items = [
 	[
-		{ name: "potato", damage: 0, speed: 0, health: 0,allowedIFrames: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
-		{ name: "Lab Rat", damage: 25, speed: 2, health: 0, firerate: 0, armor: 0, allowedIFrames: 30, description: "Looks Chewy", color: "urmom", rarity: "common", },
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, allowedIFrames: 0, color: "urmom", rarity: "common", },
+		//common
+		{ name: "Potato", damage: 0, speed: 0, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "Its a Potato...", color: "#965", rarity: "common", },
+		{ name: "Lab Rat", damage: 5, speed: 1, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "Looks Chewy", color: "#555", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC",  color: "#000", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC",  color: "#000", rarity: "common", },
 		
 	]
 ];
+
+const droppedItems = []
 //ITEMS END
 const enemies = [];
 
@@ -124,6 +128,19 @@ function drawGame() {
 	gameCtx.fillStyle = roomFloorColor;
 	gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
+	// Dropped Items
+	for (let i = 0; i < droppedItems.length; i++) {
+		gameCtx.fillStyle = droppedItems[i].item.item.color;
+		gameCtx.fillRect(droppedItems[i].x, droppedItems[i].y, 30, 30);
+		gameCtx.fillStyle = "#000";
+		gameCtx.textAlign = "center"
+		gameCtx.textBaseline = "middle";
+		gameCtx.font = "16px monospace";
+		gameCtx.fillText(droppedItems[i].item.item.name, droppedItems[i].x + 15, droppedItems[i].y-10)
+		gameCtx.font = "12px monospace";
+		gameCtx.fillText(droppedItems[i].item.item.description, droppedItems[i].x + 15, droppedItems[i].y+40)
+	}
+
 	// Player Projectiles
 	for (let i = 0; i < playerProjectiles.length; i++) {
 		gameCtx.fillStyle = "rgb(0 0 0)";
@@ -136,10 +153,6 @@ function drawGame() {
 			Math.PI * 2,
 		);
 		gameCtx.fill();
-	}
-
-	function clearScreen() {
-		playerProjectiles = [];
 	}
 
 	// Player (guess who's back)
@@ -184,7 +197,6 @@ function makeMap() {
 			});
 		}
 	}
-	console.log(map);
 	addSpawn();
 	addShop();
 	addExit();
@@ -269,6 +281,9 @@ function getNumElite() {
 	}
 }
 
+function clearScreen() {
+		playerProjectiles = [];
+	}
 // We can play the game now
 
 function playerMovement() {
@@ -327,7 +342,6 @@ function playerWallCollision() {
 			if (player.x < -35) {
 				player.x = 984;
 				player.currentRoomId -= 1;
-				console.log(player.currentRoomId);
 				createEnemies();
 			}
 		}
@@ -515,7 +529,7 @@ function clearRoom() {
 			col++;
 		}
 		map[row][col].cleared = true;
-		console.log(map[row][col]);
+		spawnItem()
 		drawMap()
 	} else {
 		requestAnimationFrame(clearRoom);
@@ -569,7 +583,6 @@ function playerEnemyCol() {
 // Upgrade time baby
 function upgrade(item) {
 	upgrade = items[0].find((e) => (e.name == item))
-	console.log(upgrade)
 	player.health += upgrade.health
 	player.maxHealth += upgrade.maxHealth
 	player.speed += upgrade.speed
@@ -577,9 +590,24 @@ function upgrade(item) {
 	player.damage += upgrade.damage
 	player.allowedIFrames += upgrade.allowedIFrames
 	player.armor += upgrade.armor
+	healthCheck(0)
 }
-upgrade("Lab Rat")
 
+function spawnItem() {
+	droppedItems.push({item: {item: items[0][Math.floor(Math.random() * items[0].length)]}, x:Math.floor(Math.random() * 951), y:Math.floor(Math.random() * 626),})
+	console.log(droppedItems)
+}
+function pickupItem() {
+	if (keys["e"]) {
+		for (let i = 0; i < droppedItems.length; i++) {
+			if (droppedItems[i].x + 15 > player.x && droppedItems[i].x + 15 < player.x + 50 && droppedItems[i].y + 15 > player.y && droppedItems[i].y + 15 < player.y + 50) {
+				upgrade(droppedItems[i].item.item.name)
+				droppedItems.splice(i,1)
+			}
+		}
+	}
+	requestAnimationFrame(pickupItem)
+}
 // Call Functions
 makeMap();
 drawGame();
@@ -592,6 +620,7 @@ requestAnimationFrame(moveEnemies);
 requestAnimationFrame(projEnemyCol);
 requestAnimationFrame(onRoomChange)
 requestAnimationFrame(playerEnemyCol)
+requestAnimationFrame(pickupItem)
 
 // To do list:
 // working shop
