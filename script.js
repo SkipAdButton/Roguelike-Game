@@ -10,6 +10,7 @@ let eliteNum = 0;
 let percent = 0;
 
 const map = [[], [], [], [], []];
+let roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})`
 
 const player = {
 	x: 100,
@@ -17,10 +18,11 @@ const player = {
 	health: 100,
 	speed: 7,
 	coins: 0,
-	firerate: 0,
-	damage: 100,
+	firerate: 14,
+	damage: 25,
 	lastshot: 0,
 	currentRoomId: 13,
+	lastRoomId: 13,
 	cycle: 1, //How many maps player has seen/played
 };
 
@@ -29,95 +31,95 @@ let itemsEquipt = 0;
 
 const items = [
 	[
-		{ name: "potato", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
+		{ name: "potato", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
 	],
 	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
 	],
 	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
 	],
 	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
 	],
 	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
 	],
 	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
 	],
 	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
-		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common",},
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, firerate: 0, armor: 0, color: "urmom", rarity: "common", },
 	],
 ];
 //ITEMS END
@@ -200,7 +202,7 @@ function drawMap() {
 function drawGame() {
 	// Reset
 	gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-	gameCtx.fillStyle = "rgba(210 210 210)";
+	gameCtx.fillStyle = roomFloorColor;
 	gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
 	// Player Projectiles
@@ -382,7 +384,6 @@ function playerWallCollision() {
 				player.currentRoomId -= 1;
 				console.log(player.currentRoomId);
 				createEnemies();
-				playerProjectiles = [];
 			}
 		}
 		// Right
@@ -398,7 +399,7 @@ function playerWallCollision() {
 				player.currentRoomId += 1;
 				console.log(player.currentRoomId);
 				createEnemies();
-				playerProjectiles = [];
+
 			}
 		}
 		// Up
@@ -412,7 +413,7 @@ function playerWallCollision() {
 				player.currentRoomId -= 5;
 				console.log(player.currentRoomId);
 				createEnemies();
-				playerProjectiles = [];
+
 			}
 		}
 		// Down
@@ -426,7 +427,7 @@ function playerWallCollision() {
 				player.currentRoomId += 5;
 				console.log(player.currentRoomId);
 				createEnemies();
-				playerProjectiles = [];
+
 			}
 		}
 	} else {
@@ -466,6 +467,18 @@ function playerWallCollision() {
 
 	drawMap();
 	requestAnimationFrame(playerWallCollision);
+}
+
+// onRoomChange
+function onRoomChange() {
+	if (player.currentRoomId != player.lastRoomId) {
+		playerProjectiles = []
+		roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})`
+		player.lastRoomId = player.currentRoomId
+		drawGame()
+		drawMap()
+	}
+	requestAnimationFrame(onRoomChange)
 }
 
 // Find Current Room
@@ -518,8 +531,14 @@ function createEnemies() {
 		for (let i = 0; i < roomEnemies; i++) {
 			setTimeout(
 				() => {
+					let spawnX = Math.ceil(Math.random() * 2)
+					if (spawnX == 1) {
+						spawnX = -50
+					} else {
+						spawnX = 1050
+					}
 					enemies.push({
-						x: Math.random() * 1100 - 50,
+						x: spawnX,
 						y: Math.random() * 775 - 50,
 						health: 100,
 						speed: Math.random() * 3 + 2,
@@ -602,6 +621,7 @@ requestAnimationFrame(createProjectile);
 requestAnimationFrame(moveProjectiles);
 requestAnimationFrame(moveEnemies);
 requestAnimationFrame(projEnemyCol);
+requestAnimationFrame(onRoomChange)
 
 // To do list:
 // enemies
