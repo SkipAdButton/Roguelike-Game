@@ -30,26 +30,51 @@ const player = {
 	cycle: 1, //How many maps player has seen/played
 };
 
+function correctValues() {
+	if (player.health > player.maxHealth) {
+		player.health = player.maxHealth
+	}
+	if (player.speed < 1) {
+		player.speed = 1
+	}
+	if (player.damage < 1) {
+		player.damage = 1
+	}
+	requestAnimationFrame(correctValues)
+	healthCheck(0)
+}
+
 //ITEMS START
 let itemsEquipt = 0;
 
-// Fire rate is applied as -(e/2) to avoid player confusion
+// Fire rate is applied as -(x/2) to avoid player confusion
 const items = [
 	[
 		//common
-		{ name: "Potato", damage: 10, speed: -1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Its a Potato...", color: "#965", rarity: "common", },
-		{ name: "Lab Rat", damage: 5, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Looks Chewy", color: "#aaa", rarity: "common", },
+		{ name: "Potato", damage: 7, speed: -1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Pretty Filling", color: "#965", rarity: "common", },
 		{ name: "Overclock", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 1, armor: 0, allowedIFrames: 0, description: "110%", color: "#aaf", rarity: "common", },
-		{ name: "Test", damage: 0, get speed() {return player.speed}, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", },
+		{ name: "Bandage", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Heals 1 Health", color: "#ddc", rarity: "common", },
+		{ name: "Running Shoes", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Limited Edition!", color: "#f44", rarity: "common", },
+		{ name: "Box of Rocks", damage: 0, speed: -3, health: 0, maxHealth: 0, firerate: 6, armor: 0, allowedIFrames: 0, description: "Stand Your Ground", color: "#667", rarity: "common", },
+		{ name: "Happy Feet", damage: -5, speed: 3, health: 0, maxHealth: 0, firerate: -2, armor: 0, allowedIFrames: 0, description: "Move Your Ground", color: "#ffa", rarity: "common", },
+		{ name: "Focus Shot", damage: 20, speed: 0, health: 0, maxHealth: 0, firerate: -20, armor: 0, allowedIFrames: 0, description: "Don't Miss", color: "#224", rarity: "common", },
+		{ name: "Guardian Angel ", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 10, description: "More Time Between Hits Taken", color: "#ffe", rarity: "common", },
+		{ name: "Cheese", damage: 0, speed: 0, get health() { return Math.floor(Math.random() * 13) - 6 }, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "May Have Mold", color: "#FFD766", rarity: "common", },
+		{ name: "Dead Rat", damage: -1, speed: -1, health: 0, maxHealth: 0, firerate: -1, armor: 0, allowedIFrames: 0, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", },
+		{ name: "NAME", damage: 1, speed: 1, health: 1, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESCDESC", color: "#000", rarity: "template", },
+
 	],
 	[
 		{ name: "Tanto", damage: 20, speed: 0, health: -2, maxHealth: -2, firerate: 0, armor: 0, allowedIFrames: 0, description: "-2 Max Health", color: "#000", rarity: "rare", },
+		{ name: "Suspicious Syringe", damage: 0, speed: 0, health: 0, maxHealth: -2, firerate: 0, armor: 5, allowedIFrames: 0, description: "Use at Own Risk", color: "#000", rarity: "rare", },
 	],
 	[
 		{ name: "Holy Grail", damage: 0, speed: 0, health: 1, maxHealth: 1, firerate: 0, armor: 0, allowedIFrames: 0, description: "Gives +1 Max Health", color: "#FFD700", rarity: "legendary", },
+		{ name: "Pack-a-Punch", get damage() {return player.damage}, speed: 0, health: 1, maxHealth: 1, firerate: 0, armor: 0, allowedIFrames: 0, description: "Double Damage!", color: "#", rarity: "legendary", },
 	],
 	[
 		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", },
+		{ name: "Test", damage: 0, get speed() {return player.speed}, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", },
 	]
 ];
 
@@ -627,6 +652,7 @@ function viewItem() {
 		if (droppedItems[i].x + 15 > player.x && droppedItems[i].x + 15 < player.x + 50 && droppedItems[i].y + 15 > player.y && droppedItems[i].y + 15 < player.y + 50) {
 			nameDisplay = `${droppedItems[i].item.item.name}`
 			statDisplay = `<u>${droppedItems[i].item.item.description}</u><br/>atk: ${droppedItems[i].item.item.damage} spd: ${droppedItems[i].item.item.speed} fr: ${droppedItems[i].item.item.firerate}`
+			break
 		} else {
 			nameDisplay = ""
 			statDisplay = ""
@@ -636,6 +662,10 @@ function viewItem() {
 	document.getElementById("itemStatDisplay").innerHTML = statDisplay;
 	requestAnimationFrame(viewItem)
 }
+spawnItem()
+spawnItem()
+spawnItem()
+spawnItem()
 spawnItem()
 // Call Functions
 makeMap();
@@ -651,6 +681,7 @@ requestAnimationFrame(onRoomChange)
 requestAnimationFrame(playerEnemyCol)
 requestAnimationFrame(pickupItem)
 requestAnimationFrame(viewItem)
+requestAnimationFrame(correctValues)
 
 // To do list:
 // working shop & exit
