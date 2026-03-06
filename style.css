@@ -1,4 +1,7 @@
-	body {
+* {
+    font-family: monospace;
+}
+body {
     background-color: rgb(24, 24, 24);
 }
 #gameCanvas {
@@ -17,4 +20,28 @@
     top: 700px;
     left: calc(50vw - 500px); 
     font-size: 48px;
+}
+#itemDisplay{
+    position: absolute;
+    top: 260px;
+    left: 0px; 
+    right: calc(100vw - 250px); 
+
+}
+#itemNameDisplay {
+    text-align: center;
+    color: white;
+    margin-bottom: -20px;
+}
+#itemStatDisplay{
+    text-align: center;
+    color: #ccc;
+}
+.itemList{
+    color: white;
+    position: absolute;
+    top: 20px;
+    right: 0px; 
+    left: calc(100vw - 250px); 
+    text-align: center;
 }
