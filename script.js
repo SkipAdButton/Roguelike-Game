@@ -33,18 +33,28 @@ const player = {
 //ITEMS START
 let itemsEquipt = 0;
 
+// Fire rate is applied as -(e/2) to avoid player confusion
 const items = [
 	[
 		//common
-		{ name: "Potato", damage: 0, speed: 0, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "Its a Potato...", color: "#965", rarity: "common", },
-		{ name: "Lab Rat", damage: 5, speed: 1, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "Looks Chewy", color: "#555", rarity: "common", },
-		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC",  color: "#000", rarity: "common", },
-		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 10, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC",  color: "#000", rarity: "common", },
-		
+		{ name: "Potato", damage: 10, speed: -1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Its a Potato...", color: "#965", rarity: "common", },
+		{ name: "Lab Rat", damage: 5, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Looks Chewy", color: "#aaa", rarity: "common", },
+		{ name: "Overclock", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 1, armor: 0, allowedIFrames: 0, description: "110%", color: "#aaf", rarity: "common", },
+		{ name: "Test", damage: 0, get speed() {return player.speed}, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", },
+	],
+	[
+		{ name: "Tanto", damage: 20, speed: 0, health: -2, maxHealth: -2, firerate: 0, armor: 0, allowedIFrames: 0, description: "-2 Max Health", color: "#000", rarity: "rare", },
+	],
+	[
+		{ name: "Holy Grail", damage: 0, speed: 0, health: 1, maxHealth: 1, firerate: 0, armor: 0, allowedIFrames: 0, description: "Gives +1 Max Health", color: "#FFD700", rarity: "legendary", },
+	],
+	[
+		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", },
 	]
 ];
 
-const droppedItems = []
+const equippedItems = []
+let droppedItems = []
 //ITEMS END
 const enemies = [];
 
@@ -136,9 +146,9 @@ function drawGame() {
 		gameCtx.textAlign = "center"
 		gameCtx.textBaseline = "middle";
 		gameCtx.font = "16px monospace";
-		gameCtx.fillText(droppedItems[i].item.item.name, droppedItems[i].x + 15, droppedItems[i].y-10)
-		gameCtx.font = "12px monospace";
-		gameCtx.fillText(droppedItems[i].item.item.description, droppedItems[i].x + 15, droppedItems[i].y+40)
+		gameCtx.fillText(droppedItems[i].item.item.name, droppedItems[i].x + 15, droppedItems[i].y - 10)
+		/* gameCtx.font = "12px monospace";
+		gameCtx.fillText(droppedItems[i].item.item.description, droppedItems[i].x + 15, droppedItems[i].y + 40) */
 	}
 
 	// Player Projectiles
@@ -191,7 +201,7 @@ function makeMap() {
 				id: y * 5 + (x + 1),
 				color: `rgb(200 200 200)`,
 				type: "empty",
-				enemies: player.cycle + 5 + Math.floor(Math.random() * 5),
+				enemies: (player.cycle * 2) + 5 + Math.floor(Math.random() * 5),
 				cleared: false,
 				visited: false,
 			});
@@ -257,7 +267,7 @@ function addElite() {
 			id: map[yPosition][xPosition].id,
 			color: `rgb(255, 100, 100)`,
 			type: "elite",
-			enemies: 5 + player.cycle * 2 + Math.floor(Math.random() * 8),
+			enemies: (player.cycle * 3) + 7 + Math.floor(Math.random() * 5),
 			cleared: false,
 			visited: false,
 		});
@@ -282,8 +292,8 @@ function getNumElite() {
 }
 
 function clearScreen() {
-		playerProjectiles = [];
-	}
+	playerProjectiles = [];
+}
 // We can play the game now
 
 function playerMovement() {
@@ -318,13 +328,11 @@ function healthCheck(change) {
 	if (player.health <= 0) {
 		player.health = 0
 	}
-	console.log("healthCheck ran " + player.health + " change: " + change)
 }
 
 function iframeCheck() {
 	if (player.iframes > 0) {
 		player.iframes -= 1
-		console.log("iframeCheck ran " + player.iframes)
 	}
 	requestAnimationFrame(iframeCheck)
 }
@@ -356,7 +364,6 @@ function playerWallCollision() {
 				// width - 16
 				player.x = -34;
 				player.currentRoomId += 1;
-				console.log(player.currentRoomId);
 				createEnemies();
 
 			}
@@ -370,7 +377,6 @@ function playerWallCollision() {
 			if (player.y < -35) {
 				player.y = 659;
 				player.currentRoomId -= 5;
-				console.log(player.currentRoomId);
 				createEnemies();
 
 			}
@@ -384,7 +390,6 @@ function playerWallCollision() {
 			if (player.y > 659) {
 				player.y = -34;
 				player.currentRoomId += 5;
-				console.log(player.currentRoomId);
 				createEnemies();
 
 			}
@@ -432,6 +437,7 @@ function playerWallCollision() {
 function onRoomChange() {
 	if (player.currentRoomId != player.lastRoomId) {
 		playerProjectiles = []
+		droppedItems = []
 		/* roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})` */
 		player.lastRoomId = player.currentRoomId
 		drawGame()
@@ -499,7 +505,7 @@ function createEnemies() {
 					enemies.push({
 						x: spawnX,
 						y: Math.random() * 775 - 50,
-						health: 100,
+					health: 50 + (50 * player.cycle),
 						speed: Math.random() * 3 + 2,
 					});
 					enemiesSpawned++;
@@ -508,7 +514,7 @@ function createEnemies() {
 					}
 					drawGame();
 				},
-				1200 * (i + 1),
+				(1200 - (50 * player.cycle)) * (i + 1),
 			);
 		}
 	}
@@ -517,7 +523,6 @@ function createEnemies() {
 function clearRoom() {
 	if (enemies.length == 0) {
 		let room = findCurrentRoom().id;
-		console.log(room);
 		let col = 0;
 		let row = 0;
 		while (room > 5) {
@@ -528,9 +533,8 @@ function clearRoom() {
 			room -= 1;
 			col++;
 		}
-		map[row][col].cleared = true;
+		setTimeout(() => {map[row][col].cleared = true; drawMap();},1000)
 		spawnItem()
-		drawMap()
 	} else {
 		requestAnimationFrame(clearRoom);
 	}
@@ -558,7 +562,6 @@ function projEnemyCol() {
 				playerProjectiles[i].y > enemies[k].y &&
 				playerProjectiles[i].y < enemies[k].y + 50
 			) {
-				console.log("hit");
 				enemies[k].health -= player.damage;
 				if (enemies[k].health <= 0) {
 					enemies.splice(k, 1);
@@ -582,32 +585,58 @@ function playerEnemyCol() {
 
 // Upgrade time baby
 function upgrade(item) {
-	upgrade = items[0].find((e) => (e.name == item))
+	let upgrade = items[0].find((e) => (e.name == item))
 	player.health += upgrade.health
 	player.maxHealth += upgrade.maxHealth
 	player.speed += upgrade.speed
-	player.firerate += upgrade.firerate
+	player.firerate -= (upgrade.firerate / 2)
 	player.damage += upgrade.damage
 	player.allowedIFrames += upgrade.allowedIFrames
 	player.armor += upgrade.armor
 	healthCheck(0)
+	equippedItems.push(upgrade.name)
+	updateItemList()
 }
 
 function spawnItem() {
-	droppedItems.push({item: {item: items[0][Math.floor(Math.random() * items[0].length)]}, x:Math.floor(Math.random() * 951), y:Math.floor(Math.random() * 626),})
-	console.log(droppedItems)
+	droppedItems.push({ item: { item: items[0][Math.floor(Math.random() * items[0].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
 }
 function pickupItem() {
 	if (keys["e"]) {
-		for (let i = 0; i < droppedItems.length; i++) {
+		for (let i = droppedItems.length - 1; i >= 0; i--) {
 			if (droppedItems[i].x + 15 > player.x && droppedItems[i].x + 15 < player.x + 50 && droppedItems[i].y + 15 > player.y && droppedItems[i].y + 15 < player.y + 50) {
 				upgrade(droppedItems[i].item.item.name)
-				droppedItems.splice(i,1)
+				droppedItems.splice(i, 1)
+				break;
 			}
 		}
 	}
 	requestAnimationFrame(pickupItem)
 }
+function updateItemList() {
+	let html = ""
+		for (let i = 0; i < equippedItems.length; i++) {
+			html += `<p>${equippedItems[i]}</p>`
+		}
+	document.getElementById("itemList").innerHTML = html
+}
+function viewItem() {
+	let nameDisplay = ""
+	let statDisplay = ""
+	for (let i = 0; i < droppedItems.length; i++) {
+		if (droppedItems[i].x + 15 > player.x && droppedItems[i].x + 15 < player.x + 50 && droppedItems[i].y + 15 > player.y && droppedItems[i].y + 15 < player.y + 50) {
+			nameDisplay = `${droppedItems[i].item.item.name}`
+			statDisplay = `<u>${droppedItems[i].item.item.description}</u><br/>atk: ${droppedItems[i].item.item.damage} spd: ${droppedItems[i].item.item.speed} fr: ${droppedItems[i].item.item.firerate}`
+		} else {
+			nameDisplay = ""
+			statDisplay = ""
+		}
+	}
+	document.getElementById("itemNameDisplay").innerHTML = nameDisplay;
+	document.getElementById("itemStatDisplay").innerHTML = statDisplay;
+	requestAnimationFrame(viewItem)
+}
+spawnItem()
 // Call Functions
 makeMap();
 drawGame();
@@ -621,8 +650,11 @@ requestAnimationFrame(projEnemyCol);
 requestAnimationFrame(onRoomChange)
 requestAnimationFrame(playerEnemyCol)
 requestAnimationFrame(pickupItem)
+requestAnimationFrame(viewItem)
 
 // To do list:
-// working shop
-// enemy health and collision with bullets (dear god)
+// working shop & exit
 // upgrades array
+
+//localStorage.setItem("test", 15);
+console.log(localStorage.getItem("test"));
