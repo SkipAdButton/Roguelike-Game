@@ -9,7 +9,7 @@ const gameCtx = gameCanvas.getContext("2d");
 let eliteNum = 0;
 let percent = 0;
 
-const map = [[], [], [], [], []];
+let map = [[], [], [], [], []];
 let roomFloorColor = `rgb(167, 167, 167)`
 
 const player = {
@@ -44,6 +44,7 @@ function correctValues() {
 	healthCheck(0)
 }
 
+let newFloor = true
 //ITEMS START
 let itemsEquipt = 0;
 
@@ -62,28 +63,33 @@ const items = [
 		{ name: "Dead Rat", damage: -1, speed: -1, health: 0, maxHealth: 0, firerate: -1, armor: 0, allowedIFrames: 0, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", coins: 0, },
 		{ name: "A Platypus", damage: 3, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Where did Perry Go?", color: "#00B1B1", rarity: "common", coins: 0, },
 		{ name: "Tub of Lard", damage: 0, speed: -5, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", coins: 0, },
-		{ name: "Left Boxing Glove", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "The left one's kinda useless", color: "#960f0f", rarity: "common", coins: 0, },
+		{ name: "Left Boxing Glove", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "Left Hook!!", color: "#960f0f", rarity: "common", coins: 0, },
 		{ name: "Right Boxing Glove", damage: 5, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Uppercut!!", color: "#960f0f", rarity: "common", coins: 0, },
-		{ name: "Small Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Don't Spend it all in one place", color: "#4A2C2A", rarity: "common", coins: 20, },
+		{ name: "Small Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Don't Spend it all in One Place", color: "#4A2C2A", rarity: "common", coins: 20, },
+		{ name: "Medium Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Many a Coin", color: "#6B4423", rarity: "rare", coins: 50, },
+		{ name: "Pick-Me-Up", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "Back on Your feet", color: "#a99", rarity: "template", coins: 0, },
+
 	],
 	[
 		{ name: "Tanto", damage: 20, speed: 0, health: -2, maxHealth: -2, firerate: 0, armor: 0, allowedIFrames: 0, description: "Commit Seppuku", color: "#A67B5B", rarity: "rare", coins: 0, },
 		{ name: "Suspicious Syringe", damage: 0, speed: 0, health: 0, maxHealth: -2, firerate: 0, armor: 5, allowedIFrames: 0, description: "Use at Own Risk", color: "#cdc", rarity: "rare", coins: 0, },
-		{ name: "Chug Jug", damage: 0, speed: 0, get health() { return player.maxHealth }, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "I really want to...", color: "#4EE5CF", rarity: "rare", coins: 0, },
-		{ name: "Life Crystal", damage: 0, speed: 0, health: 1, maxHealth: 1, firerate: 0, armor: 0, allowedIFrames: 0, description: "Gives +1 Max Health", color: "#D5384F", rarity: "rare", coins: 0, },
+		{ name: "Chug Jug", damage: 0, speed: 0, get health() { return player.maxHealth - player.health}, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "I really want to...", color: "#4EE5CF", rarity: "rare", coins: 0, },
+		{ name: "Life Crystal", damage: 0, speed: 0, health: 1, maxHealth: 1, firerate: 0, armor: 0, allowedIFrames: 0, description: "Watch Out for Darts", color: "#D5384F", rarity: "rare", coins: 0, },
 		{ name: "Focus Shot", damage: 65, speed: 0, health: 0, maxHealth: 0, firerate: -40, armor: 0, allowedIFrames: 0, description: "Don't Miss", color: "#224", rarity: "rare", coins: 0, },
 		{ name: "Compound V", damage: 0, get speed() { return Math.floor(Math.random() * 10) - 2 }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Side Effects Included", color: "#00F", rarity: "rare", coins: 0, },
 		{ name: "Stuffed Potato", damage: 25, speed: -3, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Very Filling", color: "#B87", rarity: "rare", coins: 0, },
-		{ name: "Medium Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Many a Coin", color: "#6B4423", rarity: "rare", coins: 70, },
+
 	],
 	[
 		{ name: "Holy Grail", damage: 0, speed: 0, health: 3, maxHealth: 3, firerate: 0, armor: 0, allowedIFrames: 0, description: "Good Movie, Too", color: "#FFD700", rarity: "legendary", coins: 0, },
 		{ name: "Pack-a-Punch", get damage() { return player.damage }, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Insta-Kill! (not really)", color: "#afa", rarity: "legendary", coins: 0, },
-		{ name: "Large Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Many a Coin", color: "#8B5A2B", rarity: "rare", coins: 70, },
+		{ name: "Terraspark Boots", damage: 0, speed: 5, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Just Fight WoF Already", color: "#81F240", rarity: "legendary", coins: 0, },
 	],
 	[
 		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
 		{ name: "Test", damage: 0, get speed() { return player.speed }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
+		{ name: "Dev Bag", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "You Shouldn't Have This", color: "#ff8", rarity: "template", coins: 10000, },
+		{ name: "Orange Zapinator", damage: 999999, speed: 0, health: 0, maxHealth: 0, get firerate() { return player.firerate * 2 }, armor: 0, allowedIFrames: 0, description: "You Shouldn't Have This", color: "#FFBF00", rarity: "template", coins: 10000, },
 	]
 ];
 
@@ -173,8 +179,25 @@ function drawGame() {
 	gameCtx.clearRect(-5, -5, gameCanvas.width + 10, gameCanvas.height + 10);
 	gameCtx.fillStyle = "rgb(167 167 167)";
 	gameCtx.fillRect(-5, -5, gameCanvas.width + 10, gameCanvas.height + 10);
+	let currentRoom = findCurrentRoom()
 
-	// Dropped Items
+	// Exit Room
+	if (currentRoom.type == "exit") {
+		gameCtx.fillStyle = "rgb(100 100 100)";
+		gameCtx.fillRect(450, 230, 100, 100);
+		gameCtx.fillStyle = "rgb(0 0 20)";
+		gameCtx.fillRect(460, 240, 80, 90);
+		gameCtx.fillStyle = "rgb(150 150 150)";
+		gameCtx.fillRect(460, 310, 80, 20);
+		gameCtx.fillStyle = "rgb(120 120 120)";
+		gameCtx.fillRect(465, 300, 70, 10);
+		gameCtx.fillStyle = "rgb(60 60 60)";
+		gameCtx.fillRect(470, 293, 60, 7);
+		gameCtx.fillStyle = "rgb(30 30 30)";
+		gameCtx.fillRect(475, 288, 50, 5);
+	}
+
+	// Items
 	for (let i = 0; i < droppedItems.length; i++) {
 		gameCtx.fillStyle = droppedItems[i].item.item.color;
 		gameCtx.fillRect(droppedItems[i].x, droppedItems[i].y, 30, 30);
@@ -184,14 +207,17 @@ function drawGame() {
 		gameCtx.font = "16px monospace";
 		gameCtx.fillText(droppedItems[i].item.item.name, droppedItems[i].x + 15, droppedItems[i].y - 10)
 	}
-	for (let i = 0; i < shopItems.length; i++) {
-		gameCtx.fillStyle = shopItems[i].item.item.color;
-		gameCtx.fillRect(shopItems[i].x, shopItems[i].y, 30, 30);
-		gameCtx.fillStyle = "#000";
-		gameCtx.textAlign = "center"
-		gameCtx.textBaseline = "middle";
-		gameCtx.font = "16px monospace";
-		gameCtx.fillText(shopItems[i].item.item.name, shopItems[i].x + 15, shopItems[i].y - 10)
+	if (currentRoom.type == "shop") {
+		for (let i = 0; i < shopItems.length; i++) {
+			gameCtx.fillStyle = shopItems[i].item.item.color;
+			gameCtx.fillRect(shopItems[i].x, shopItems[i].y, 30, 30);
+			gameCtx.fillStyle = "#000";
+			gameCtx.textAlign = "center"
+			gameCtx.textBaseline = "middle";
+			gameCtx.font = "16px monospace";
+			gameCtx.fillText(shopItems[i].item.item.name, shopItems[i].x + 15, shopItems[i].y - 10)
+			gameCtx.fillText("Cost: ¢" + shopItems[i].cost, shopItems[i].x + 15, shopItems[i].y + 40)
+		}
 	}
 
 	// Player Projectiles
@@ -259,12 +285,14 @@ function drawGame() {
 		}
 	}
 	// border 
-	/* 
-	let currentRoom = findCurrentRoom()
-	if (currentRoom.type !== "empty") { */
+	if (currentRoom.type !== "empty") {
 		gameCtx.strokeStyle = roomFloorColor;
 		gameCtx.strokeRect(1, 1, gameCanvas.width - 2, gameCanvas.height - 2);
 		gameCtx.strokeRect(2, 2, gameCanvas.width - 4, gameCanvas.height - 4);
+	}
+	
+	
+	
 	
 }
 
@@ -342,7 +370,7 @@ function addElite() {
 			id: map[yPosition][xPosition].id,
 			color: `rgb(255, 100, 100)`,
 			type: "elite",
-			enemies: (player.cycle * 3) + 7 + Math.floor(Math.random() * 5),
+			enemies: ((player.cycle * 2) + 5 + Math.floor(Math.random() * 5)) * 2,
 			cleared: false,
 			visited: false,
 		});
@@ -357,9 +385,9 @@ function getNumElite() {
 	if (percent > 90) {
 		eliteNum = 3;
 	} else if (percent > 70) {
-		eliteNum = 2;
-	} else {
 		eliteNum = 1;
+	} else {
+		eliteNum = 2;
 	}
 	for (let i = eliteNum; i > 0; i--) {
 		addElite();
@@ -528,10 +556,11 @@ function onRoomChange() {
 		droppedItems = []
 		/* roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})` */
 		player.lastRoomId = player.currentRoomId
-		drawGame()
-		drawMap()
 		if (currentRoom.type == "shop") {
-			requestAnimationFrame(spawnShopItems)
+			if(newFloor){
+				newFloor = false
+				requestAnimationFrame(spawnShopItems)
+			}
 			roomFloorColor = "rgb(255 255 0)"
 		}else if(currentRoom.type == "elite"){
 			roomFloorColor = "rgb(255 0 0)"
@@ -540,6 +569,9 @@ function onRoomChange() {
 		}else{
 			roomFloorColor = `rgb(167, 167, 167)`
 		}
+		
+		drawGame()
+		drawMap()
 	}
 	requestAnimationFrame(onRoomChange)
 }
@@ -611,7 +643,7 @@ function createEnemies() {
 						enemies.push({
 							x: spawnX,
 							y: Math.random() * 775 - 50,
-							health: 50 + (50 * player.cycle),
+							health: (100 * player.cycle),
 							speed: Math.random() * 3 + 2,
 							type: type
 						});
@@ -619,8 +651,8 @@ function createEnemies() {
 						enemies.push({
 							x: spawnX,
 							y: Math.random() * 775 - 50,
-							health: 100 + (50 * player.cycle),
-							speed: Math.random() * .5,
+							health: (125 * player.cycle),
+							speed: Math.random() * 2.5,
 							type: type
 						});console.log("type two created")
 					}
@@ -664,7 +696,9 @@ function moveEnemies() {
 		);
 		enemies[i].x += Math.cos(angle) * enemies[i].speed;
 		enemies[i].y += Math.sin(angle) * enemies[i].speed;
-		enemies[i].speed += 0.004;
+		if (enemies[i].type == 1) {
+			enemies[i].speed += 0.004;
+		}
 	}
 	requestAnimationFrame(moveEnemies);
 }
@@ -787,6 +821,7 @@ function devSpawnItem(name) {
 }
 
 function pickupItem() {
+	let currentRoom = findCurrentRoom()
 	if (keys["e"]) {
 		for (let i = droppedItems.length - 1; i >= 0; i--) {
 			if (droppedItems[i].x + 15 > player.x && droppedItems[i].x + 15 < player.x + 50 && droppedItems[i].y + 15 > player.y && droppedItems[i].y + 15 < player.y + 50) {
@@ -794,6 +829,16 @@ function pickupItem() {
 				droppedItems.splice(i, 1)
 				break;
 			}
+		}
+		if (currentRoom.type == "shop") {
+			for (let i = shopItems.length - 1; i >= 0; i--) {
+			if (shopItems[i].x + 15 > player.x && shopItems[i].x + 15 < player.x + 50 && shopItems[i].y + 15 > player.y && shopItems[i].y + 15 < player.y + 50 && player.coins >= shopItems[i].cost) {
+				upgrade(shopItems[i].item.item.name)
+				player.coins -= shopItems[i].cost
+				shopItems.splice(i, 1)
+				break;
+			}
+		}
 		}
 	}
 	requestAnimationFrame(pickupItem)
@@ -806,6 +851,7 @@ function updateItemList() {
 	document.getElementById("itemList").innerHTML = html
 }
 function viewItem() {
+	let currentRoom = findCurrentRoom()
 	let nameDisplay = ""
 	let statDisplay = ""
 	for (let i = 0; i < droppedItems.length; i++) {
@@ -818,6 +864,18 @@ function viewItem() {
 			statDisplay = ""
 		}
 	}
+	if (currentRoom.type == "shop") {
+		for (let i = 0; i < shopItems.length; i++) {
+		if (shopItems[i].x + 15 > player.x && shopItems[i].x + 15 < player.x + 50 && shopItems[i].y + 15 > player.y && shopItems[i].y + 15 < player.y + 50) {
+			nameDisplay = `${shopItems[i].item.item.name}`
+			statDisplay = `<u>${shopItems[i].item.item.description}</u><br/>ATK: ${shopItems[i].item.item.damage} SPD: ${shopItems[i].item.item.speed} FR: ${shopItems[i].item.item.firerate}<br/> HP: ${shopItems[i].item.item.health} MAXHP: ${shopItems[i].item.item.maxHealth} AR: ${shopItems[i].item.item.armor}`
+			break
+		} else {
+			nameDisplay = ""
+			statDisplay = ""
+		}
+	}
+	}
 	document.getElementById("itemNameDisplay").innerHTML = nameDisplay;
 	document.getElementById("itemStatDisplay").innerHTML = statDisplay;
 	requestAnimationFrame(viewItem)
@@ -826,23 +884,47 @@ function viewItem() {
 //Shop
 function spawnShopItems() {
 	let random = Math.floor(Math.random() * 101)
-	if (random > 90) {
-		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 300, y: 500, })
+	if (random > 66) {
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 300, y: 500, cost: Math.floor(Math.random() * 150) + 450})
 	} else {
-		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 300, y: 500, })
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 300, y: 500, cost: Math.floor(Math.random() * 150) + 150})
 	}
 	random = Math.floor(Math.random() * 101)
-	if (random > 90) {
-		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 500, y: 500, })
+	if (random > 66) {
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 500, y: 500, cost: Math.floor(Math.random() * 150) + 450})
 	} else {
-		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 500, y: 500, })
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 500, y: 500, cost: Math.floor(Math.random() * 150) + 150})
 	}
 	random = Math.floor(Math.random() * 101)
-	if (random > 90) {
-		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 700, y: 500, })
+	if (random > 66) {
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 700, y: 500, cost: Math.floor(Math.random() * 150) + 450})
 	} else {
-		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 700, y: 500, })
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 700, y: 500, cost: Math.floor(Math.random() * 150) + 150})
 	}
+}
+
+function displayCoins() {
+	document.getElementById("coinDisplay").innerHTML = `Coins: ${player.coins}`
+	requestAnimationFrame(displayCoins)
+}
+
+// Exit Room
+function exitFloor() {
+	let currentRoom = findCurrentRoom()
+	if (keys["e"] && currentRoom.type === "exit") {
+		if (player.x + 25 > 450 && player.x + 25 < 550 && player.y + 25 > 230 && player.y + 25 < 330 ) {
+				player.cycle++
+				map = [[], [], [], [], []];
+				player.currentRoomId = 13
+				player.x = 50
+				player.y = 50
+				player.health += 2;
+				newFloor = true
+				makeMap()
+				drawMap()
+			}
+	}
+	requestAnimationFrame(exitFloor)
 }
 
 // Call Functions
@@ -862,6 +944,8 @@ requestAnimationFrame(viewItem)
 requestAnimationFrame(correctValues)
 requestAnimationFrame(enemyShooting)
 requestAnimationFrame(playerEnemyProjCol)
+requestAnimationFrame(exitFloor)
+requestAnimationFrame(displayCoins)
 // To do list:
 // working shop & exit
 // upgrades array
