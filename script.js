@@ -10,7 +10,7 @@ let eliteNum = 0;
 let percent = 0;
 
 const map = [[], [], [], [], []];
-let roomFloorColor = `rgb(200 200 200)`
+let roomFloorColor = `rgb(167, 167, 167)`
 
 const player = {
 	x: 100,
@@ -51,37 +51,45 @@ let itemsEquipt = 0;
 const items = [
 	[
 		//common
-		{ name: "Potato", damage: 7, speed: -1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Pretty Filling", color: "#965", rarity: "common", },
-		{ name: "Overclock", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 1, armor: 0, allowedIFrames: 0, description: "110%", color: "#aaf", rarity: "common", },
-		{ name: "Bandage", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Heals 1 Health", color: "#ddc", rarity: "common", },
-		{ name: "Running Shoes", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Limited Edition!", color: "#f44", rarity: "common", },
-		{ name: "Box of Rocks", damage: 0, speed: -3, health: 0, maxHealth: 0, firerate: 6, armor: 0, allowedIFrames: 0, description: "Stand Your Ground", color: "#667", rarity: "common", },
-		{ name: "Happy Feet", damage: -5, speed: 3, health: 0, maxHealth: 0, firerate: -2, armor: 0, allowedIFrames: 0, description: "Move Your Ground", color: "#ffa", rarity: "common", },
-		{ name: "Focush Sot", damage: 65, speed: 0, health: 0, maxHealth: 0, firerate: -40, armor: 0, allowedIFrames: 0, description: "Don't Miss", color: "#224", rarity: "common", },
-		{ name: "Guardian Angel ", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 10, description: "More Time Between Hits Taken", color: "#ffe", rarity: "common", },
-		{ name: "Cheese", damage: 0, speed: 0, get health() { return Math.floor(Math.random() * 13) - 6 }, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "May Have Mold", color: "#FFD766", rarity: "common", },
-		{ name: "Dead Rat", damage: -1, speed: -1, health: 0, maxHealth: 0, firerate: -1, armor: 0, allowedIFrames: 0, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", },
-		{ name: "A Platypus", damage: 3, speed: 2, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Where did Perry Go?", color: "#00B1B1", rarity: "common", },
-		{ name: "Tub of Lard", damage: 0, speed: -5, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", },
-
+		{ name: "Potato", damage: 7, speed: -1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Pretty Filling", color: "#965", rarity: "common", coins: 0, },
+		{ name: "Overclock", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 2, armor: 0, allowedIFrames: 0, description: "110%", color: "#aaf", rarity: "common", coins: 0, },
+		{ name: "Bandage", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Heals 1 Health", color: "#ddc", rarity: "common", coins: 0, },
+		{ name: "Running Shoes", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 1, armor: 0, allowedIFrames: 0, description: "Limited Edition!", color: "#f44", rarity: "common", coins: 0, },
+		{ name: "Box of Rocks", damage: 0, speed: -3, health: 0, maxHealth: 0, firerate: 6, armor: 0, allowedIFrames: 0, description: "Stand Your Ground", color: "#667", rarity: "common", coins: 0, },
+		{ name: "Happy Feet", damage: -5, speed: 3, health: 0, maxHealth: 0, firerate: -2, armor: 0, allowedIFrames: 0, description: "Move Your Ground", color: "#ffa", rarity: "common", coins: 0, },
+		{ name: "Guardian Angel ", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 10, description: "More Time Between Hits Taken", color: "#ffe", rarity: "common", coins: 0, },
+		{ name: "Cheese", damage: 0, speed: 0, get health() { return Math.floor(Math.random() * 13) - 6 }, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "May Have Mold", color: "#FFD766", rarity: "common", coins: 0, },
+		{ name: "Dead Rat", damage: -1, speed: -1, health: 0, maxHealth: 0, firerate: -1, armor: 0, allowedIFrames: 0, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", coins: 0, },
+		{ name: "A Platypus", damage: 3, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Where did Perry Go?", color: "#00B1B1", rarity: "common", coins: 0, },
+		{ name: "Tub of Lard", damage: 0, speed: -5, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", coins: 0, },
+		{ name: "Left Boxing Glove", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "The left one's kinda useless", color: "#960f0f", rarity: "common", coins: 0, },
+		{ name: "Right Boxing Glove", damage: 5, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Uppercut!!", color: "#960f0f", rarity: "common", coins: 0, },
+		{ name: "Small Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Don't Spend it all in one place", color: "#4A2C2A", rarity: "common", coins: 20, },
 	],
 	[
-		{ name: "Tanto", damage: 20, speed: 0, health: -2, maxHealth: -2, firerate: 0, armor: 0, allowedIFrames: 0, description: "-2 Max Health", color: "#A67B5B", rarity: "rare", },
-		{ name: "Suspicious Syringe", damage: 0, speed: 0, health: 0, maxHealth: -2, firerate: 0, armor: 5, allowedIFrames: 0, description: "Use at Own Risk", color: "#cdc", rarity: "rare", },
-		{ name: "Chug Jug", damage: 0, speed: 0, get health() { return player.maxHealth }, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "I really want to...", color: "#4EE5CF", rarity: "rare", },
+		{ name: "Tanto", damage: 20, speed: 0, health: -2, maxHealth: -2, firerate: 0, armor: 0, allowedIFrames: 0, description: "Commit Seppuku", color: "#A67B5B", rarity: "rare", coins: 0, },
+		{ name: "Suspicious Syringe", damage: 0, speed: 0, health: 0, maxHealth: -2, firerate: 0, armor: 5, allowedIFrames: 0, description: "Use at Own Risk", color: "#cdc", rarity: "rare", coins: 0, },
+		{ name: "Chug Jug", damage: 0, speed: 0, get health() { return player.maxHealth }, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "I really want to...", color: "#4EE5CF", rarity: "rare", coins: 0, },
+		{ name: "Life Crystal", damage: 0, speed: 0, health: 1, maxHealth: 1, firerate: 0, armor: 0, allowedIFrames: 0, description: "Gives +1 Max Health", color: "#D5384F", rarity: "rare", coins: 0, },
+		{ name: "Focus Shot", damage: 65, speed: 0, health: 0, maxHealth: 0, firerate: -40, armor: 0, allowedIFrames: 0, description: "Don't Miss", color: "#224", rarity: "rare", coins: 0, },
+		{ name: "Compound V", damage: 0, get speed() { return Math.floor(Math.random() * 10) - 2 }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Side Effects Included", color: "#00F", rarity: "rare", coins: 0, },
+		{ name: "Stuffed Potato", damage: 25, speed: -3, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Very Filling", color: "#B87", rarity: "rare", coins: 0, },
+		{ name: "Medium Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Many a Coin", color: "#6B4423", rarity: "rare", coins: 70, },
 	],
 	[
-		{ name: "Holy Grail", damage: 0, speed: 0, health: 3, maxHealth: 3, firerate: 0, armor: 0, allowedIFrames: 0, description: "Gives +1 Max Health", color: "#FFD700", rarity: "legendary", },
-		{ name: "Pack-a-Punch", get damage() { return player.damage }, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Insta-Kill! (not really)", color: "#afa", rarity: "legendary", },
+		{ name: "Holy Grail", damage: 0, speed: 0, health: 3, maxHealth: 3, firerate: 0, armor: 0, allowedIFrames: 0, description: "Good Movie, Too", color: "#FFD700", rarity: "legendary", coins: 0, },
+		{ name: "Pack-a-Punch", get damage() { return player.damage }, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Insta-Kill! (not really)", color: "#afa", rarity: "legendary", coins: 0, },
+		{ name: "Large Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Many a Coin", color: "#8B5A2B", rarity: "rare", coins: 70, },
 	],
 	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", },
-		{ name: "Test", damage: 0, get speed() { return player.speed }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", },
+		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
+		{ name: "Test", damage: 0, get speed() { return player.speed }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
 	]
 ];
 
 const equippedItems = []
 let droppedItems = []
+let shopItems = []
 //ITEMS END
 const enemies = [];
 
@@ -100,6 +108,7 @@ const mouse = {
 };
 
 let playerProjectiles = [];
+let enemyProjectiles = [];
 
 document.addEventListener("mousedown", () => {
 	mouse.down = true;
@@ -161,9 +170,9 @@ function drawMap() {
 }
 function drawGame() {
 	// Reset
-	gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-	gameCtx.fillStyle = roomFloorColor;
-	gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+	gameCtx.clearRect(-5, -5, gameCanvas.width + 10, gameCanvas.height + 10);
+	gameCtx.fillStyle = "rgb(167 167 167)";
+	gameCtx.fillRect(-5, -5, gameCanvas.width + 10, gameCanvas.height + 10);
 
 	// Dropped Items
 	for (let i = 0; i < droppedItems.length; i++) {
@@ -174,17 +183,37 @@ function drawGame() {
 		gameCtx.textBaseline = "middle";
 		gameCtx.font = "16px monospace";
 		gameCtx.fillText(droppedItems[i].item.item.name, droppedItems[i].x + 15, droppedItems[i].y - 10)
-		/* gameCtx.font = "12px monospace";
-		gameCtx.fillText(droppedItems[i].item.item.description, droppedItems[i].x + 15, droppedItems[i].y + 40) */
+	}
+	for (let i = 0; i < shopItems.length; i++) {
+		gameCtx.fillStyle = shopItems[i].item.item.color;
+		gameCtx.fillRect(shopItems[i].x, shopItems[i].y, 30, 30);
+		gameCtx.fillStyle = "#000";
+		gameCtx.textAlign = "center"
+		gameCtx.textBaseline = "middle";
+		gameCtx.font = "16px monospace";
+		gameCtx.fillText(shopItems[i].item.item.name, shopItems[i].x + 15, shopItems[i].y - 10)
 	}
 
 	// Player Projectiles
 	for (let i = 0; i < playerProjectiles.length; i++) {
-		gameCtx.fillStyle = "rgb(0 0 0)";
+		gameCtx.fillStyle = "#000038";
 		gameCtx.beginPath();
 		gameCtx.arc(
 			playerProjectiles[i].x,
 			playerProjectiles[i].y,
+			5,
+			0,
+			Math.PI * 2,
+		);
+		gameCtx.fill();
+	}
+	// Enemy Projectiles
+	for (let i = 0; i < enemyProjectiles.length; i++) {
+		gameCtx.fillStyle = "rgb(0 0 0)";
+		gameCtx.beginPath();
+		gameCtx.arc(
+			enemyProjectiles[i].x,
+			enemyProjectiles[i].y,
 			5,
 			0,
 			Math.PI * 2,
@@ -209,15 +238,34 @@ function drawGame() {
 
 	// Enemies
 	for (let i = 0; i < enemies.length; i++) {
-		gameCtx.fillStyle = "rgb(100 100 100)";
-		gameCtx.fillRect(enemies[i].x, enemies[i].y, 50, 50);
-		gameCtx.fillStyle = "rgb(0 0 0)";
-		gameCtx.fillRect(enemies[i].x, enemies[i].y + 10, 50, 5);
-		gameCtx.fillRect(enemies[i].x + 10, enemies[i].y + 15, 10, 5);
-		gameCtx.fillRect(enemies[i].x + 30, enemies[i].y + 15, 10, 5);
-		gameCtx.fillStyle = "rgb(75 75 75)";
-		gameCtx.fillRect(enemies[i].x + 15, enemies[i].y + 30, 20, 3);
+		if (enemies[i].type == 1) {
+			gameCtx.fillStyle = "rgb(100 100 100)";
+			gameCtx.fillRect(enemies[i].x, enemies[i].y, 50, 50);
+			gameCtx.fillStyle = "rgb(0 0 0)";
+			gameCtx.fillRect(enemies[i].x, enemies[i].y + 10, 50, 5);
+			gameCtx.fillRect(enemies[i].x + 10, enemies[i].y + 15, 10, 5);
+			gameCtx.fillRect(enemies[i].x + 30, enemies[i].y + 15, 10, 5);
+			gameCtx.fillStyle = "rgb(75 75 75)";
+			gameCtx.fillRect(enemies[i].x + 15, enemies[i].y + 30, 20, 3);
+		} else {
+			gameCtx.fillStyle = "rgb(25 25 25)";
+			gameCtx.fillRect(enemies[i].x, enemies[i].y, 50, 50);
+			gameCtx.fillStyle = "rgb(150 150 150)";
+			gameCtx.fillRect(enemies[i].x, enemies[i].y + 10, 50, 5);
+			gameCtx.fillRect(enemies[i].x + 10, enemies[i].y + 14, 10, 6);
+			gameCtx.fillRect(enemies[i].x + 30, enemies[i].y + 14, 10, 6);
+			gameCtx.fillStyle = "rgb(10 10 10)";
+			gameCtx.fillRect(enemies[i].x + 15, enemies[i].y + 30, 20, 3);
+		}
 	}
+	// border 
+	/* 
+	let currentRoom = findCurrentRoom()
+	if (currentRoom.type !== "empty") { */
+		gameCtx.strokeStyle = roomFloorColor;
+		gameCtx.strokeRect(1, 1, gameCanvas.width - 2, gameCanvas.height - 2);
+		gameCtx.strokeRect(2, 2, gameCanvas.width - 4, gameCanvas.height - 4);
+	
 }
 
 // Create Map
@@ -360,7 +408,9 @@ function healthCheck(change) {
 		for (let i = 0; i < player.maxHealth - (player.health + player.armor); i++) {
 			document.getElementById("displayHealth").innerHTML += "🖤"
 		}
-		player.iframes = player.allowedIFrames;
+		if (change != 0) {
+			player.iframes = player.allowedIFrames;
+		}
 	}
 	if (player.health <= 0) {
 		player.health = 0
@@ -472,6 +522,7 @@ function playerWallCollision() {
 
 // onRoomChange
 function onRoomChange() {
+	let currentRoom = findCurrentRoom()
 	if (player.currentRoomId != player.lastRoomId) {
 		playerProjectiles = []
 		droppedItems = []
@@ -479,6 +530,16 @@ function onRoomChange() {
 		player.lastRoomId = player.currentRoomId
 		drawGame()
 		drawMap()
+		if (currentRoom.type == "shop") {
+			requestAnimationFrame(spawnShopItems)
+			roomFloorColor = "rgb(255 255 0)"
+		}else if(currentRoom.type == "elite"){
+			roomFloorColor = "rgb(255 0 0)"
+		}else if(currentRoom.type == "exit"){
+			roomFloorColor = "rgb(0 255 0)"
+		}else{
+			roomFloorColor = `rgb(167, 167, 167)`
+		}
 	}
 	requestAnimationFrame(onRoomChange)
 }
@@ -519,6 +580,12 @@ function moveProjectiles() {
 		playerProjectiles[i].y +=
 			Math.sin(playerProjectiles[i].angle) * playerProjectiles[i].speed;
 	}
+	for (let i = 0; i < enemyProjectiles.length; i++) {
+		enemyProjectiles[i].x +=
+			Math.cos(enemyProjectiles[i].angle) * enemyProjectiles[i].speed;
+		enemyProjectiles[i].y +=
+			Math.sin(enemyProjectiles[i].angle) * enemyProjectiles[i].speed;
+	}
 	drawGame();
 	requestAnimationFrame(moveProjectiles);
 }
@@ -539,12 +606,24 @@ function createEnemies() {
 					} else {
 						spawnX = 1050
 					}
-					enemies.push({
-						x: spawnX,
-						y: Math.random() * 775 - 50,
-						health: 50 + (50 * player.cycle),
-						speed: Math.random() * 3 + 2,
-					});
+					let type = Math.ceil(Math.random() * 2)
+					if (type == 1) {
+						enemies.push({
+							x: spawnX,
+							y: Math.random() * 775 - 50,
+							health: 50 + (50 * player.cycle),
+							speed: Math.random() * 3 + 2,
+							type: type
+						});
+					} else {
+						enemies.push({
+							x: spawnX,
+							y: Math.random() * 775 - 50,
+							health: 100 + (50 * player.cycle),
+							speed: Math.random() * .5,
+							type: type
+						});console.log("type two created")
+					}
 					enemiesSpawned++;
 					if (enemiesSpawned >= roomEnemies) {
 						clearRoom();
@@ -590,6 +669,39 @@ function moveEnemies() {
 	requestAnimationFrame(moveEnemies);
 }
 
+function enemyShooting() {
+	for (let i = 0; i < enemies.length; i++) {
+		if (enemies[i].type == 2) {
+			let random = Math.floor(Math.random() * 100) + 1
+			if (random == 1) {
+				enemyProjectiles.push({
+					angle: Math.atan2(
+						player.y - enemies[i].y,
+						player.x - enemies[i].x,
+					),
+					x: enemies[i].x + 25,
+					y: enemies[i].y + 25,
+					speed: 8,
+				})
+			}
+		}
+	}
+	requestAnimationFrame(enemyShooting)
+}
+
+function playerEnemyProjCol() {
+	for (let i = 0; i < enemyProjectiles.length; i++) {
+		if (enemyProjectiles[i].x > player.x &&
+			enemyProjectiles[i].x < player.x + 50 &&
+			enemyProjectiles[i].y > player.y &&
+			enemyProjectiles[i].y < player.y + 50) {
+			healthCheck(-1)
+			enemyProjectiles.splice(i,1)
+		}
+	}
+	requestAnimationFrame(playerEnemyProjCol)
+}
+
 function projEnemyCol() {
 	for (let i = 0; i < playerProjectiles.length; i++) {
 		for (let k = 0; k < enemies.length; k++) {
@@ -631,6 +743,7 @@ function upgrade(item) {
 	player.damage += upgrade.damage
 	player.allowedIFrames += upgrade.allowedIFrames
 	player.armor += upgrade.armor
+	player.coins += upgrade.coins
 	healthCheck(0)
 	equippedItems.push(upgrade.name)
 	updateItemList()
@@ -639,30 +752,38 @@ function upgrade(item) {
 function spawnItem() {
 	let currentRoom = findCurrentRoom();
 	console.log(currentRoom)
+	let getItem = Math.floor(Math.random() * 2) + 1
 	let random = Math.floor(Math.random() * 101)
 	if (currentRoom.type == "elite") {
-		if (random > 80) {
+		if (random > 90) {
 			droppedItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
 		} else {
 			droppedItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
 		}
 	} else {
-		if (random > 98) {
-			droppedItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
-		} else {
-			if (random > 95) {
-				droppedItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
+		if (getItem == 1) {
+			if (random > 98) {
+				droppedItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
 			} else {
-				droppedItems.push({ item: { item: items[0][Math.floor(Math.random() * items[0].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
+				if (random > 95) {
+					droppedItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
+				} else {
+					droppedItems.push({ item: { item: items[0][Math.floor(Math.random() * items[0].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
+				}
 			}
 		}
 	}
 }
 
-document.addEventListener("keydown", (e) => { if (e.key == "i") {devSpawnItem(prompt("What Item do You Want to Spawn in?"))}})
+document.addEventListener("keydown", (e) => { if (e.key == "i") { devSpawnItem(prompt("What Item do You Want to Spawn in?")) } })
 
 function devSpawnItem(name) {
+	let itemSearch = items.flat().find((e) => (e.name == name))
+	if (itemSearch !== undefined) {
 		droppedItems.push({ item: { item: items.flat().find((e) => (e.name == name)) }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
+	} else {
+		alert("That is not a valid spelling of an item, caps matter.")
+	}
 }
 
 function pickupItem() {
@@ -690,7 +811,7 @@ function viewItem() {
 	for (let i = 0; i < droppedItems.length; i++) {
 		if (droppedItems[i].x + 15 > player.x && droppedItems[i].x + 15 < player.x + 50 && droppedItems[i].y + 15 > player.y && droppedItems[i].y + 15 < player.y + 50) {
 			nameDisplay = `${droppedItems[i].item.item.name}`
-			statDisplay = `<u>${droppedItems[i].item.item.description}</u><br/>atk: ${droppedItems[i].item.item.damage} spd: ${droppedItems[i].item.item.speed} fr: ${droppedItems[i].item.item.firerate}`
+			statDisplay = `<u>${droppedItems[i].item.item.description}</u><br/>ATK: ${droppedItems[i].item.item.damage} SPD: ${droppedItems[i].item.item.speed} FR: ${droppedItems[i].item.item.firerate}<br/> HP: ${droppedItems[i].item.item.health} MAXHP: ${droppedItems[i].item.item.maxHealth} AR: ${droppedItems[i].item.item.armor}`
 			break
 		} else {
 			nameDisplay = ""
@@ -701,6 +822,29 @@ function viewItem() {
 	document.getElementById("itemStatDisplay").innerHTML = statDisplay;
 	requestAnimationFrame(viewItem)
 }
+
+//Shop
+function spawnShopItems() {
+	let random = Math.floor(Math.random() * 101)
+	if (random > 90) {
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 300, y: 500, })
+	} else {
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 300, y: 500, })
+	}
+	random = Math.floor(Math.random() * 101)
+	if (random > 90) {
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 500, y: 500, })
+	} else {
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 500, y: 500, })
+	}
+	random = Math.floor(Math.random() * 101)
+	if (random > 90) {
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 700, y: 500, })
+	} else {
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 700, y: 500, })
+	}
+}
+
 // Call Functions
 makeMap();
 drawGame();
@@ -716,7 +860,8 @@ requestAnimationFrame(playerEnemyCol)
 requestAnimationFrame(pickupItem)
 requestAnimationFrame(viewItem)
 requestAnimationFrame(correctValues)
-
+requestAnimationFrame(enemyShooting)
+requestAnimationFrame(playerEnemyProjCol)
 // To do list:
 // working shop & exit
 // upgrades array
