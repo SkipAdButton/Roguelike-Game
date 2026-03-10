@@ -43,8 +43,6 @@ function correctValues() {
 	requestAnimationFrame(correctValues)
 	healthCheck(0)
 }
-
-let newFloor = true
 //ITEMS START
 let itemsEquipt = 0;
 
@@ -62,12 +60,12 @@ const items = [
 		{ name: "Cheese", damage: 0, speed: 0, get health() { return Math.floor(Math.random() * 13) - 6 }, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "May Have Mold", color: "#FFD766", rarity: "common", coins: 0, },
 		{ name: "Dead Rat", damage: -1, speed: -1, health: 0, maxHealth: 0, firerate: -1, armor: 0, allowedIFrames: 0, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", coins: 0, },
 		{ name: "A Platypus", damage: 3, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Where did Perry Go?", color: "#00B1B1", rarity: "common", coins: 0, },
-		{ name: "Tub of Lard", damage: 0, speed: -5, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", coins: 0, },
+		{ name: "Tub of Lard", damage: 0, speed: -3, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", coins: 0, },
 		{ name: "Left Boxing Glove", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "Left Hook!!", color: "#960f0f", rarity: "common", coins: 0, },
 		{ name: "Right Boxing Glove", damage: 5, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Uppercut!!", color: "#960f0f", rarity: "common", coins: 0, },
 		{ name: "Small Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Don't Spend it all in One Place", color: "#4A2C2A", rarity: "common", coins: 20, },
 		{ name: "Medium Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Many a Coin", color: "#6B4423", rarity: "rare", coins: 50, },
-		{ name: "Pick-Me-Up", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "Back on Your feet", color: "#a99", rarity: "template", coins: 0, },
+		{ name: "Pick-Me-Up", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "Back on Your feet", color: "#e77", rarity: "template", coins: 0, },
 
 	],
 	[
@@ -89,7 +87,7 @@ const items = [
 		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
 		{ name: "Test", damage: 0, get speed() { return player.speed }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
 		{ name: "Dev Bag", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "You Shouldn't Have This", color: "#ff8", rarity: "template", coins: 10000, },
-		{ name: "Orange Zapinator", damage: 999999, speed: 0, health: 0, maxHealth: 0, get firerate() { return player.firerate * 2 }, armor: 0, allowedIFrames: 0, description: "You Shouldn't Have This", color: "#FFBF00", rarity: "template", coins: 10000, },
+		{ name: "Orange Zapinator", damage: 999999, speed: 0, health: 0, maxHealth: 0, get firerate() { return player.firerate * 2 }, armor: 0, allowedIFrames: 0, description: "You Shouldn't Have This", color: "#FFBF00", rarity: "template", coins: 0, },
 	]
 ];
 
@@ -557,10 +555,7 @@ function onRoomChange() {
 		/* roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})` */
 		player.lastRoomId = player.currentRoomId
 		if (currentRoom.type == "shop") {
-			if(newFloor){
-				newFloor = false
-				requestAnimationFrame(spawnShopItems)
-			}
+			
 			roomFloorColor = "rgb(255 255 0)"
 		}else if(currentRoom.type == "elite"){
 			roomFloorColor = "rgb(255 0 0)"
@@ -786,7 +781,7 @@ function upgrade(item) {
 function spawnItem() {
 	let currentRoom = findCurrentRoom();
 	console.log(currentRoom)
-	let getItem = Math.floor(Math.random() * 2) + 1
+	let getItem = Math.floor(Math.random() * 4) + 1
 	let random = Math.floor(Math.random() * 101)
 	if (currentRoom.type == "elite") {
 		if (random > 90) {
@@ -795,7 +790,7 @@ function spawnItem() {
 			droppedItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
 		}
 	} else {
-		if (getItem == 1) {
+		if (getItem !== 1) {
 			if (random > 98) {
 				droppedItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: Math.floor(Math.random() * 951), y: Math.floor(Math.random() * 626), })
 			} else {
@@ -883,6 +878,7 @@ function viewItem() {
 
 //Shop
 function spawnShopItems() {
+	shopItems = []
 	let random = Math.floor(Math.random() * 101)
 	if (random > 66) {
 		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 300, y: 500, cost: Math.floor(Math.random() * 150) + 450})
@@ -919,7 +915,7 @@ function exitFloor() {
 				player.x = 50
 				player.y = 50
 				player.health += 2;
-				newFloor = true
+				spawnShopItems()
 				makeMap()
 				drawMap()
 			}
@@ -930,6 +926,7 @@ function exitFloor() {
 // Call Functions
 makeMap();
 drawGame();
+spawnShopItems()
 requestAnimationFrame(iframeCheck)
 requestAnimationFrame(playerMovement);
 requestAnimationFrame(playerWallCollision);
