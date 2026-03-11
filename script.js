@@ -11,6 +11,7 @@ let percent = 0;
 
 let map = [[], [], [], [], []];
 let roomFloorColor = `rgb(167, 167, 167)`
+let impendingTimer = 600
 
 const player = {
 	x: 100,
@@ -29,6 +30,10 @@ const player = {
 	allowedIFrames: 30,
 	cycle: 1, //How many maps player has seen/played
 };
+const playerStats = {
+	enemiesKilled: 0,
+	itemsCollected: 0,
+}
 
 function correctValues() {
 	if (player.health > player.maxHealth) {
@@ -50,44 +55,47 @@ let itemsEquipt = 0;
 const items = [
 	[
 		//common
-		{ name: "Potato", damage: 7, speed: -1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Pretty Filling", color: "#965", rarity: "common", coins: 0, },
-		{ name: "Overclock", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 2, armor: 0, allowedIFrames: 0, description: "110%", color: "#aaf", rarity: "common", coins: 0, },
-		{ name: "Bandage", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Heals 1 Health", color: "#ddc", rarity: "common", coins: 0, },
-		{ name: "Running Shoes", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 1, armor: 0, allowedIFrames: 0, description: "Limited Edition!", color: "#f44", rarity: "common", coins: 0, },
-		{ name: "Box of Rocks", damage: 0, speed: -3, health: 0, maxHealth: 0, firerate: 6, armor: 0, allowedIFrames: 0, description: "Stand Your Ground", color: "#667", rarity: "common", coins: 0, },
-		{ name: "Happy Feet", damage: -5, speed: 3, health: 0, maxHealth: 0, firerate: -2, armor: 0, allowedIFrames: 0, description: "Move Your Ground", color: "#ffa", rarity: "common", coins: 0, },
-		{ name: "Guardian Angel ", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 10, description: "More Time Between Hits Taken", color: "#ffe", rarity: "common", coins: 0, },
-		{ name: "Cheese", damage: 0, speed: 0, get health() { return Math.floor(Math.random() * 13) - 6 }, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "May Have Mold", color: "#FFD766", rarity: "common", coins: 0, },
-		{ name: "Dead Rat", damage: -1, speed: -1, health: 0, maxHealth: 0, firerate: -1, armor: 0, allowedIFrames: 0, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", coins: 0, },
-		{ name: "A Platypus", damage: 3, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Where did Perry Go?", color: "#00B1B1", rarity: "common", coins: 0, },
-		{ name: "Tub of Lard", damage: 0, speed: -3, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", coins: 0, },
-		{ name: "Left Boxing Glove", damage: 0, speed: 1, health: 0, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "Left Hook!!", color: "#960f0f", rarity: "common", coins: 0, },
-		{ name: "Right Boxing Glove", damage: 5, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Uppercut!!", color: "#960f0f", rarity: "common", coins: 0, },
-		{ name: "Small Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Don't Spend it all in One Place", color: "#4A2C2A", rarity: "common", coins: 20, },
-		{ name: "Medium Bag of Coins", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Many a Coin", color: "#6B4423", rarity: "rare", coins: 50, },
-		{ name: "Pick-Me-Up", damage: 0, speed: 0, health: 1, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "Back on Your feet", color: "#e77", rarity: "template", coins: 0, },
+		{ name: "Potato", damage: 7, speed: -1, description: "Pretty Filling", color: "#965", rarity: "common", },
+		{ name: "Overclock", firerate: 2, description: "110%", color: "#aaf", rarity: "common", },
+		{ name: "Bandage", health: 2, description: "Smells Funny", color: "#ddc", rarity: "common", persists: false, },
+		{ name: "Med-Kit", health: 3, description: "Patch Up", color: "#d11", rarity: "common", persists: false, },
+		{ name: "Running Shoes", speed: 1, firerate: 1, description: "Limited Edition!", color: "#f44", rarity: "common", },
+		{ name: "Box of Rocks", speed: -3, firerate: 6, description: "Stand Your Ground", color: "#667", rarity: "common", },
+		{ name: "Happy Feet", damage: -5, speed: 3, firerate: -2, description: "Move Your Ground", color: "#ffa", rarity: "common", },
+		{ name: "Guardian Angel ", allowedIFrames: 10, description: "More Time Between Hits Taken", color: "#ffe", rarity: "common", },
+		{ name: "Cheese", get health() { return Math.floor(Math.random() * 13) - 6 }, description: "May Have Mold", color: "#FFD766", rarity: "common", persists: false, },
+		{ name: "Dead Rat", damage: -1, speed: -1, firerate: -1, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", },
+		{ name: "A Platypus", damage: 3, speed: 1, description: "Where did Perry Go?", color: "#00B1B1", rarity: "common", },
+		{ name: "Tub of Lard", speed: -2, armor: 2, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", },
+		{ name: "Boxing Gloves", damage: 5, speed: 2, description: "Uppercut!!", color: "#960f0f", rarity: "common", },
+		{ name: "Small Bag of Coins", description: "Don't Spend it all in One Place", color: "#4A2C2A", rarity: "common", coins: 20, persists: false, },
+		{ name: "Medium Bag of Coins", description: "Many a Coin", color: "#6B4423", rarity: "common", coins: 50, persists: false, },
+		{ name: "Pick-Me-Up", health: 1, armor: 1, description: "Back on Your feet", color: "#e77", rarity: "common", persists: false, },
 
 	],
 	[
-		{ name: "Tanto", damage: 20, speed: 0, health: -2, maxHealth: -2, firerate: 0, armor: 0, allowedIFrames: 0, description: "Commit Seppuku", color: "#A67B5B", rarity: "rare", coins: 0, },
-		{ name: "Suspicious Syringe", damage: 0, speed: 0, health: 0, maxHealth: -2, firerate: 0, armor: 5, allowedIFrames: 0, description: "Use at Own Risk", color: "#cdc", rarity: "rare", coins: 0, },
-		{ name: "Chug Jug", damage: 0, speed: 0, get health() { return player.maxHealth - player.health}, maxHealth: 0, firerate: 0, armor: 1, allowedIFrames: 0, description: "I really want to...", color: "#4EE5CF", rarity: "rare", coins: 0, },
-		{ name: "Life Crystal", damage: 0, speed: 0, health: 1, maxHealth: 1, firerate: 0, armor: 0, allowedIFrames: 0, description: "Watch Out for Darts", color: "#D5384F", rarity: "rare", coins: 0, },
-		{ name: "Focus Shot", damage: 65, speed: 0, health: 0, maxHealth: 0, firerate: -40, armor: 0, allowedIFrames: 0, description: "Don't Miss", color: "#224", rarity: "rare", coins: 0, },
-		{ name: "Compound V", damage: 0, get speed() { return Math.floor(Math.random() * 10) - 2 }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Side Effects Included", color: "#00F", rarity: "rare", coins: 0, },
-		{ name: "Stuffed Potato", damage: 25, speed: -3, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Very Filling", color: "#B87", rarity: "rare", coins: 0, },
+		{ name: "Tanto", damage: 25, health: -2, maxHealth: -2, description: "Commit Seppuku", color: "#A67B5B", rarity: "rare", },
+		{ name: "Suspicious Syringe", maxHealth: -2, armor: 5, description: "Use at Own Risk", color: "#cdc", rarity: "rare", },
+		{ name: "Chug Jug", get health() { return player.maxHealth }, armor: 1, description: "I really want to...", color: "#4EE5CF", rarity: "rare", persists: false, },
+		{ name: "Life Crystal", health: 1, maxHealth: 1, description: "Watch Out for Darts", color: "#D5384F", rarity: "rare", },
+		{ name: "Focus Shot", damage: 65, firerate: -40, description: "Don't Miss", color: "#224", rarity: "rare", },
+		{ name: "Compound V", get speed() { return Math.floor(Math.random() * 10) - 2 }, description: "Side Effects Included", color: "#00F", rarity: "rare", },
+		{ name: "Stuffed Potato", damage: 25, speed: -3, description: "Very Filling", color: "#B87", rarity: "rare", },
+		{ name: "Pack Rat", get damage() { return equippedItems.length * 2 }, description: "Don't Mind the Stench", color: "#000", rarity: "rare", },
+	],
+	[
+		{ name: "Holy Grail", health: 3, maxHealth: 3, description: "Good Movie, Too", color: "#FFD700", rarity: "legendary", },
+		{ name: "Pack-a-Punch", get damage() { return player.damage }, description: "Insta-Kill! (not really)", color: "#afa", rarity: "legendary", },
+		{ name: "Terraspark Boots", get damage() {return Math.ceil(player.speed * 1.5)}, speed: 5, get firerate() {return Math.ceil(player.speed * 1.5)}, description: "Just Fight WoF Already", color: "#81F240", rarity: "legendary", },
+		{ name: "Mark VII", damage: 5, speed: 2, armor: 7, description: "I Hate You 3000", color: "#C41E1E", rarity: "legendary", },
+		{ name: "Super Serum", damage: 15, speed: 3, health: 2, maxHealth: 2, firerate: 2, armor: 1, allowedIFrames: 5, description: "I Can Do This All Day", color: "#77e", rarity: "legendary", },
 
 	],
 	[
-		{ name: "Holy Grail", damage: 0, speed: 0, health: 3, maxHealth: 3, firerate: 0, armor: 0, allowedIFrames: 0, description: "Good Movie, Too", color: "#FFD700", rarity: "legendary", coins: 0, },
-		{ name: "Pack-a-Punch", get damage() { return player.damage }, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "Insta-Kill! (not really)", color: "#afa", rarity: "legendary", coins: 0, },
-		{ name: "Terraspark Boots", damage: 0, speed: 5, health: 0, maxHealth: 0, firerate: 0, armor: 2, allowedIFrames: 0, description: "Just Fight WoF Already", color: "#81F240", rarity: "legendary", coins: 0, },
-	],
-	[
-		{ name: "NAME", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
-		{ name: "Test", damage: 0, get speed() { return player.speed }, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "DESC", color: "#000", rarity: "template", coins: 0, },
-		{ name: "Dev Bag", damage: 0, speed: 0, health: 0, maxHealth: 0, firerate: 0, armor: 0, allowedIFrames: 0, description: "You Shouldn't Have This", color: "#ff8", rarity: "template", coins: 10000, },
-		{ name: "Orange Zapinator", damage: 999999, speed: 0, health: 0, maxHealth: 0, get firerate() { return player.firerate * 2 }, armor: 0, allowedIFrames: 0, description: "You Shouldn't Have This", color: "#FFBF00", rarity: "template", coins: 0, },
+		{ name: "NAME", damage: 1, speed: 1, firerate: 1, health: 1, maxHealth: 1, armor: 1, allowedIFrames: 1, description: "DESC", color: "#000", rarity: "template", coins: 1, },
+		{ name: "Test", get speed() { return player.speed }, description: "DESC", color: "#000", rarity: "template", },
+		{ name: "Dev Bag", description: "You Shouldn't Have This", color: "#ff8", rarity: "template", coins: 10000, persists: false, },
+		{ name: "Orange Zapinator", damage: 999999, get firerate() { return player.firerate * 2 }, description: "You Shouldn't Have This", color: "#FFBF00", rarity: "template", },
 	]
 ];
 
@@ -97,7 +105,8 @@ let shopItems = []
 //ITEMS END
 const enemies = [];
 
-const keys = [];
+const keys = {};
+
 document.addEventListener("keydown", (e) => {
 	keys[e.key.toLowerCase()] = true;
 });
@@ -288,10 +297,10 @@ function drawGame() {
 		gameCtx.strokeRect(1, 1, gameCanvas.width - 2, gameCanvas.height - 2);
 		gameCtx.strokeRect(2, 2, gameCanvas.width - 4, gameCanvas.height - 4);
 	}
-	
-	
-	
-	
+
+
+
+
 }
 
 // Create Map
@@ -397,6 +406,37 @@ function clearScreen() {
 }
 // We can play the game now
 
+function tutorialScreen() {
+	keyPressed = Object.keys(keys).length > 0
+	if (keyPressed) {
+		document.getElementById('tutorialScreen').style.display = "none"
+		startTimer()
+	} else {
+		requestAnimationFrame(tutorialScreen)
+	}
+}
+
+function startTimer() {
+	setInterval(e => {
+		impendingTimer--;
+		if (impendingTimer % 60 < 10) {
+			document.getElementById("timeDisplay").innerHTML = `${Math.floor(impendingTimer / 60)}:0${impendingTimer % 60}`
+		} else {
+			document.getElementById("timeDisplay").innerHTML = `${Math.floor(impendingTimer / 60)}:${impendingTimer % 60}`
+		}
+		if (impendingTimer == 0) {
+			endScreen("Run Ended")
+		}
+	}, 1000)
+}
+
+function endScreen(text) {
+	document.getElementById("endTitle").innerHTML = text
+	document.getElementById("floorDisplay").innerHTML = `Floor Reached: ${player.cycle}`
+	document.getElementById("enemiesKilledDisplay").innerHTML = `Enemies Killed: ${playerStats.enemiesKilled}`
+	document.getElementById("endScreen").style.display = "flex"
+}
+
 function playerMovement() {
 	if (keys["w"] || keys["arrowup"]) {
 		player.y -= player.speed;
@@ -440,6 +480,7 @@ function healthCheck(change) {
 	}
 	if (player.health <= 0) {
 		player.health = 0
+		endScreen("You Died")
 	}
 }
 
@@ -552,19 +593,18 @@ function onRoomChange() {
 	if (player.currentRoomId != player.lastRoomId) {
 		playerProjectiles = []
 		droppedItems = []
-		/* roomFloorColor = `rgb(${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150} ${Math.floor(Math.random() * 51) + 150})` */
 		player.lastRoomId = player.currentRoomId
 		if (currentRoom.type == "shop") {
-			
+
 			roomFloorColor = "rgb(255 255 0)"
-		}else if(currentRoom.type == "elite"){
+		} else if (currentRoom.type == "elite") {
 			roomFloorColor = "rgb(255 0 0)"
-		}else if(currentRoom.type == "exit"){
+		} else if (currentRoom.type == "exit") {
 			roomFloorColor = "rgb(0 255 0)"
-		}else{
+		} else {
 			roomFloorColor = `rgb(167, 167, 167)`
 		}
-		
+
 		drawGame()
 		drawMap()
 	}
@@ -647,9 +687,9 @@ function createEnemies() {
 							x: spawnX,
 							y: Math.random() * 775 - 50,
 							health: (125 * player.cycle),
-							speed: Math.random() * 2.5,
+							speed: Math.random() * 2.5 + 1,
 							type: type
-						});console.log("type two created")
+						});
 					}
 					enemiesSpawned++;
 					if (enemiesSpawned >= roomEnemies) {
@@ -710,7 +750,7 @@ function enemyShooting() {
 					),
 					x: enemies[i].x + 25,
 					y: enemies[i].y + 25,
-					speed: 8,
+					speed: 7.5 + (player.cycle / 2),
 				})
 			}
 		}
@@ -725,7 +765,7 @@ function playerEnemyProjCol() {
 			enemyProjectiles[i].y > player.y &&
 			enemyProjectiles[i].y < player.y + 50) {
 			healthCheck(-1)
-			enemyProjectiles.splice(i,1)
+			enemyProjectiles.splice(i, 1)
 		}
 	}
 	requestAnimationFrame(playerEnemyProjCol)
@@ -744,6 +784,7 @@ function projEnemyCol() {
 				if (enemies[k].health <= 0) {
 					enemies.splice(k, 1);
 					player.coins++
+					playerStats.enemiesKilled++
 				}
 				playerProjectiles.splice(i, 1);
 				break;
@@ -762,19 +803,39 @@ function playerEnemyCol() {
 	requestAnimationFrame(playerEnemyCol)
 }
 
-// Upgrade time baby
 function upgrade(item) {
+	// Basic Stats
 	let upgrade = items.flat().find((e) => (e.name == item))
-	player.health += upgrade.health
-	player.maxHealth += upgrade.maxHealth
-	player.speed += upgrade.speed
-	player.firerate -= (upgrade.firerate / 2)
-	player.damage += upgrade.damage
-	player.allowedIFrames += upgrade.allowedIFrames
-	player.armor += upgrade.armor
-	player.coins += upgrade.coins
-	healthCheck(0)
-	equippedItems.push(upgrade.name)
+	if (upgrade.hasOwnProperty("health")) {
+		player.health += upgrade.health
+	}
+	if (upgrade.hasOwnProperty("maxHealth")) {
+		player.maxHealth += upgrade.maxHealth
+	}
+	if (upgrade.hasOwnProperty("speed")) {
+		player.speed += upgrade.speed
+	}
+	if (upgrade.hasOwnProperty("firerate")) {
+		player.firerate -= (upgrade.firerate / 2)
+	}
+	if (upgrade.hasOwnProperty("damage")) {
+		player.damage += upgrade.damage
+	}
+	if (upgrade.hasOwnProperty("allowedIFrames")) {
+		player.allowedIFrames += upgrade.allowedIFrames
+	}
+	if (upgrade.hasOwnProperty("armor")) {
+		player.armor += upgrade.armor
+	}
+	if (upgrade.hasOwnProperty("coins")) {
+		player.coins += upgrade.coins
+	}
+	if (!upgrade.hasOwnProperty("persists")) {
+		equippedItems.push(upgrade.name)
+	}
+	// Unique
+
+	playerStats.itemsCollected++
 	updateItemList()
 }
 
@@ -827,13 +888,13 @@ function pickupItem() {
 		}
 		if (currentRoom.type == "shop") {
 			for (let i = shopItems.length - 1; i >= 0; i--) {
-			if (shopItems[i].x + 15 > player.x && shopItems[i].x + 15 < player.x + 50 && shopItems[i].y + 15 > player.y && shopItems[i].y + 15 < player.y + 50 && player.coins >= shopItems[i].cost) {
-				upgrade(shopItems[i].item.item.name)
-				player.coins -= shopItems[i].cost
-				shopItems.splice(i, 1)
-				break;
+				if (shopItems[i].x + 15 > player.x && shopItems[i].x + 15 < player.x + 50 && shopItems[i].y + 15 > player.y && shopItems[i].y + 15 < player.y + 50 && player.coins >= shopItems[i].cost) {
+					upgrade(shopItems[i].item.item.name)
+					player.coins -= shopItems[i].cost
+					shopItems.splice(i, 1)
+					break;
+				}
 			}
-		}
 		}
 	}
 	requestAnimationFrame(pickupItem)
@@ -852,8 +913,29 @@ function viewItem() {
 	for (let i = 0; i < droppedItems.length; i++) {
 		if (droppedItems[i].x + 15 > player.x && droppedItems[i].x + 15 < player.x + 50 && droppedItems[i].y + 15 > player.y && droppedItems[i].y + 15 < player.y + 50) {
 			nameDisplay = `${droppedItems[i].item.item.name}`
-			statDisplay = `<u>${droppedItems[i].item.item.description}</u><br/>ATK: ${droppedItems[i].item.item.damage} SPD: ${droppedItems[i].item.item.speed} FR: ${droppedItems[i].item.item.firerate}<br/> HP: ${droppedItems[i].item.item.health} MAXHP: ${droppedItems[i].item.item.maxHealth} AR: ${droppedItems[i].item.item.armor}`
-			break
+			statDisplay += `<u>${droppedItems[i].item.item.description}</u></br>`
+			if (droppedItems[i].item.item.hasOwnProperty("damage")) {
+				statDisplay += `atk: ${droppedItems[i].item.item.damage} `
+			}
+			if (droppedItems[i].item.item.hasOwnProperty("firerate")) {
+				statDisplay += `fr: ${droppedItems[i].item.item.firerate} `
+			}
+			if (droppedItems[i].item.item.hasOwnProperty("speed")) {
+				statDisplay += `spd: ${droppedItems[i].item.item.speed} `
+			}
+			if (droppedItems[i].item.item.hasOwnProperty("health")) {
+				statDisplay += `hp: ${droppedItems[i].item.item.health} `
+			}
+			if (droppedItems[i].item.item.hasOwnProperty("maxHealth")) {
+				statDisplay += `maxhp: ${droppedItems[i].item.item.maxHealth} `
+			}
+			if (droppedItems[i].item.item.hasOwnProperty("armor")) {
+				statDisplay += `amr: ${droppedItems[i].item.item.armor} `
+			}
+			if (droppedItems[i].item.item.hasOwnProperty("coins")) {
+				statDisplay += `¢: ${droppedItems[i].item.item.coins} `
+			}
+			break;
 		} else {
 			nameDisplay = ""
 			statDisplay = ""
@@ -861,15 +943,36 @@ function viewItem() {
 	}
 	if (currentRoom.type == "shop") {
 		for (let i = 0; i < shopItems.length; i++) {
-		if (shopItems[i].x + 15 > player.x && shopItems[i].x + 15 < player.x + 50 && shopItems[i].y + 15 > player.y && shopItems[i].y + 15 < player.y + 50) {
-			nameDisplay = `${shopItems[i].item.item.name}`
-			statDisplay = `<u>${shopItems[i].item.item.description}</u><br/>ATK: ${shopItems[i].item.item.damage} SPD: ${shopItems[i].item.item.speed} FR: ${shopItems[i].item.item.firerate}<br/> HP: ${shopItems[i].item.item.health} MAXHP: ${shopItems[i].item.item.maxHealth} AR: ${shopItems[i].item.item.armor}`
+			if (shopItems[i].x + 15 > player.x && shopItems[i].x + 15 < player.x + 50 && shopItems[i].y + 15 > player.y && shopItems[i].y + 15 < player.y + 50) {
+				nameDisplay = `${shopItems[i].item.item.name}`
+			statDisplay += `<u>${shopItems[i].item.item.description}</u></br>`
+			if (shopItems[i].item.item.hasOwnProperty("damage")) {
+				statDisplay += `ATK: ${shopItems[i].item.item.damage} `
+			}
+			if (shopItems[i].item.item.hasOwnProperty("firerate")) {
+				statDisplay += `FR: ${shopItems[i].item.item.firerate} `
+			}
+			if (shopItems[i].item.item.hasOwnProperty("speed")) {
+				statDisplay += `SPD: ${shopItems[i].item.item.speed} `
+			}
+			if (shopItems[i].item.item.hasOwnProperty("health")) {
+				statDisplay += `HP: ${shopItems[i].item.item.health} `
+			}
+			if (shopItems[i].item.item.hasOwnProperty("maxHealth")) {
+				statDisplay += `MAXHP: ${shopItems[i].item.item.maxHealth} `
+			}
+			if (shopItems[i].item.item.hasOwnProperty("armor")) {
+				statDisplay += `AR: ${shopItems[i].item.item.armor} `
+			}
+			if (shopItems[i].item.item.hasOwnProperty("coins")) {
+				statDisplay += `¢: ${shopItems[i].item.item.coins} `
+			}
 			break
-		} else {
-			nameDisplay = ""
-			statDisplay = ""
+			} else {
+				nameDisplay = ""
+				statDisplay = ""
+			}
 		}
-	}
 	}
 	document.getElementById("itemNameDisplay").innerHTML = nameDisplay;
 	document.getElementById("itemStatDisplay").innerHTML = statDisplay;
@@ -881,21 +984,21 @@ function spawnShopItems() {
 	shopItems = []
 	let random = Math.floor(Math.random() * 101)
 	if (random > 66) {
-		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 300, y: 500, cost: Math.floor(Math.random() * 150) + 450})
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 300, y: 500, cost: Math.floor(Math.random() * 90) + 450 })
 	} else {
-		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 300, y: 500, cost: Math.floor(Math.random() * 150) + 150})
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 300, y: 500, cost: Math.floor(Math.random() * 90) + 150 })
 	}
 	random = Math.floor(Math.random() * 101)
 	if (random > 66) {
-		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 500, y: 500, cost: Math.floor(Math.random() * 150) + 450})
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 500, y: 500, cost: Math.floor(Math.random() * 90) + 450 })
 	} else {
-		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 500, y: 500, cost: Math.floor(Math.random() * 150) + 150})
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 500, y: 500, cost: Math.floor(Math.random() * 90) + 150 })
 	}
 	random = Math.floor(Math.random() * 101)
 	if (random > 66) {
-		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 700, y: 500, cost: Math.floor(Math.random() * 150) + 450})
+		shopItems.push({ item: { item: items[2][Math.floor(Math.random() * items[2].length)] }, x: 700, y: 500, cost: Math.floor(Math.random() * 90) + 450 })
 	} else {
-		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 700, y: 500, cost: Math.floor(Math.random() * 150) + 150})
+		shopItems.push({ item: { item: items[1][Math.floor(Math.random() * items[1].length)] }, x: 700, y: 500, cost: Math.floor(Math.random() * 90) + 150 })
 	}
 }
 
@@ -908,17 +1011,18 @@ function displayCoins() {
 function exitFloor() {
 	let currentRoom = findCurrentRoom()
 	if (keys["e"] && currentRoom.type === "exit") {
-		if (player.x + 25 > 450 && player.x + 25 < 550 && player.y + 25 > 230 && player.y + 25 < 330 ) {
-				player.cycle++
-				map = [[], [], [], [], []];
-				player.currentRoomId = 13
-				player.x = 50
-				player.y = 50
-				player.health += 2;
-				spawnShopItems()
-				makeMap()
-				drawMap()
-			}
+		if (player.x + 25 > 450 && player.x + 25 < 550 && player.y + 25 > 230 && player.y + 25 < 330) {
+			player.cycle++
+			map = [[], [], [], [], []];
+			player.currentRoomId = 13
+			player.x = 50
+			player.y = 50
+			player.health += 1;
+			document.getElementById("floorCountDisplay").innerHTML = `Floor: ${player.cycle}`
+			spawnShopItems()
+			makeMap()
+			drawMap()
+		}
 	}
 	requestAnimationFrame(exitFloor)
 }
@@ -943,9 +1047,10 @@ requestAnimationFrame(enemyShooting)
 requestAnimationFrame(playerEnemyProjCol)
 requestAnimationFrame(exitFloor)
 requestAnimationFrame(displayCoins)
+requestAnimationFrame(tutorialScreen)
 // To do list:
 // working shop & exit
 // upgrades array
 
 //localStorage.setItem("test", 15);
-console.log(localStorage.getItem("test"));
+//console.log(localStorage.getItem("test"));
