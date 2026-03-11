@@ -8,10 +8,14 @@
 	<script src="script.js" defer></script>
 </head>
 <body>
+	<div id="timeDisplay">10:00</div>
+	<div id="floorCountDisplay">Floor: 1</div>
 	<canvas id="mapCanvas" width="250px" height="250px"></canvas>
 	<canvas id="gameCanvas" width="1000px" height="675px"></canvas>
 	<h1 id="displayHealth">❤️❤️❤️❤️❤️❤️</h1>
 	<div id="itemDisplay"><h1 id="itemNameDisplay"></h1><h3 id="itemStatDisplay"></h3></div>
 	<div class="itemList"><h1><u>Inventory</u></h1><h3 id="coinDisplay">Coins: 0</h3><span id="itemList"></span></div>
+	<div id="tutorialScreen"><h1>How to Play</h1><h3>You have ten minutes to get to the highest floor</br> you can marked by the green room</h3><h3>Use [WASD] or the Arrow Keys to move and [LEFT CLICK] to shoot</h3><i><h3>Use [E] to interact with the environment</h3><h2>Press any key to continue</h2></i></div>
+	<div id="endScreen"><h1 id="endTitle">Run Ended</h1><h2 id="floorDisplay">Floor Reached: 0</h2><h2 id="enemiesKilledDisplay">Enemies Killed: 0</h2></div>
 </body>
 </html>
