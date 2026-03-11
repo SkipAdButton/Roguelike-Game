@@ -1,5 +1,6 @@
 * {
     font-family: monospace;
+    user-select: none;
 }
 body {
     background-color: rgb(24, 24, 24);
@@ -9,9 +10,25 @@ body {
     /* top: calc(40vh - 337.5px); */
     left: calc(50vw - 500px);
 }
-
+#timeDisplay{
+    position: absolute;
+    width: 250px;
+    text-align: center;
+    color: white;
+    font-size: 48px;
+    user-select: none;
+}
+#floorCountDisplay{
+    position: absolute;
+    width: 250px;
+    top: 56px;
+    text-align: center;
+    color: lightgray;
+    font-size: 28px;
+}
 #mapCanvas {
     position: absolute;
+    top: 90px;
     /* top: calc(40vh - 250px); */
     /* left: calc(50vw - 500px); */
 }
@@ -23,9 +40,12 @@ body {
 }
 #itemDisplay{
     position: absolute;
-    top: 260px;
+    top: 340px;
     left: 0px; 
-    right: calc(100vw - 250px); 
+    width: 250px;
+    max-width: 250px;
+    text-align: center;
+    /* right: calc(100vw - 250px); */
 
 }
 #itemNameDisplay {
@@ -44,4 +64,53 @@ body {
     right: 0px; 
     left: calc(100vw - 250px); 
     text-align: center;
+    user-select: none;
+}
+#tutorialScreen{
+    top: 0px;
+    right: 0px; 
+    background-color: rgba(0, 0, 0, .75);
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+#tutorialScreen h1{
+    color: white;
+    font-size: 128px;
+}
+#tutorialScreen h3{
+    color: white;
+    font-size: 46px;
+}
+#tutorialScreen h2{
+    color: white;
+    font-size: 64px;
+}
+#endScreen{
+    top: 0px;
+    right: 0px; 
+    background-image: linear-gradient(#4a4f6a, #2c2f3f);
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    display: none;
+    flex-direction: column;
+    user-select: none;
+}
+#endScreen h1{
+    color: white;
+    font-size: 164px;
+}
+#endScreen h3{
+    color: white;
+    font-size: 46px;
+}
+#endScreen h2{
+    color: white;
+    font-size: 64px;
 }
