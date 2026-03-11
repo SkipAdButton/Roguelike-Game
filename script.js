@@ -29,6 +29,7 @@ const player = {
 	iframes: 0,
 	allowedIFrames: 30,
 	cycle: 1, //How many maps player has seen/played
+	dead: false,
 };
 const playerStats = {
 	enemiesKilled: 0,
@@ -67,7 +68,7 @@ const items = [
 		{ name: "Dead Rat", damage: -1, speed: -1, firerate: -1, description: "I Wouldn't Eat That", color: "#0001", rarity: "common", },
 		{ name: "A Platypus", damage: 3, speed: 1, description: "Where did Perry Go?", color: "#00B1B1", rarity: "common", },
 		{ name: "Tub of Lard", speed: -2, armor: 2, description: "Could Take a Hit", color: "#F5F5DC", rarity: "common", },
-		{ name: "Boxing Gloves", damage: 5, speed: 2, description: "Uppercut!!", color: "#960f0f", rarity: "common", },
+		{ name: "Boxing Gloves", damage: 5, speed: 0, description: "Uppercut!!", color: "#960f0f", rarity: "common", },
 		{ name: "Small Bag of Coins", description: "Don't Spend it all in One Place", color: "#4A2C2A", rarity: "common", coins: 20, persists: false, },
 		{ name: "Medium Bag of Coins", description: "Many a Coin", color: "#6B4423", rarity: "common", coins: 50, persists: false, },
 		{ name: "Pick-Me-Up", health: 1, armor: 1, description: "Back on Your feet", color: "#e77", rarity: "common", persists: false, },
@@ -76,12 +77,12 @@ const items = [
 	[
 		{ name: "Tanto", damage: 25, health: -2, maxHealth: -2, description: "Commit Seppuku", color: "#A67B5B", rarity: "rare", },
 		{ name: "Suspicious Syringe", maxHealth: -2, armor: 5, description: "Use at Own Risk", color: "#cdc", rarity: "rare", },
-		{ name: "Chug Jug", get health() { return player.maxHealth }, armor: 1, description: "I really want to...", color: "#4EE5CF", rarity: "rare", persists: false, },
+		{ name: "Chug Jug", get health() { return player.maxHealth - player.health;}, get armor() {return (5 - (player.maxHealth - player.health))}, description: "I really want to...", color: "#4EE5CF", rarity: "rare", persists: false, },
 		{ name: "Life Crystal", health: 1, maxHealth: 1, description: "Watch Out for Darts", color: "#D5384F", rarity: "rare", },
 		{ name: "Focus Shot", damage: 65, firerate: -40, description: "Don't Miss", color: "#224", rarity: "rare", },
 		{ name: "Compound V", get speed() { return Math.floor(Math.random() * 10) - 2 }, description: "Side Effects Included", color: "#00F", rarity: "rare", },
 		{ name: "Stuffed Potato", damage: 25, speed: -3, description: "Very Filling", color: "#B87", rarity: "rare", },
-		{ name: "Pack Rat", get damage() { return equippedItems.length * 2 }, description: "Don't Mind the Stench", color: "#000", rarity: "rare", },
+		{ name: "Pack Rat", get damage() { return equippedItems.length * 3 }, description: "Don't Mind the Stench", color: "#542", rarity: "rare", },
 	],
 	[
 		{ name: "Holy Grail", health: 3, maxHealth: 3, description: "Good Movie, Too", color: "#FFD700", rarity: "legendary", },
@@ -94,8 +95,9 @@ const items = [
 	[
 		{ name: "NAME", damage: 1, speed: 1, firerate: 1, health: 1, maxHealth: 1, armor: 1, allowedIFrames: 1, description: "DESC", color: "#000", rarity: "template", coins: 1, },
 		{ name: "Test", get speed() { return player.speed }, description: "DESC", color: "#000", rarity: "template", },
-		{ name: "Dev Bag", description: "You Shouldn't Have This", color: "#ff8", rarity: "template", coins: 10000, persists: false, },
-		{ name: "Orange Zapinator", damage: 999999, get firerate() { return player.firerate * 2 }, description: "You Shouldn't Have This", color: "#FFBF00", rarity: "template", },
+		{ name: "Dev Bag", description: "You Shouldn't Have This", color: "#ff8", rarity: "dev", coins: 10000, persists: false, },
+		{ name: "Orange Zapinator", damage: 999999, get firerate() { return player.firerate * 2 }, description: "You Shouldn't Have This", color: "#FFBF00", rarity: "dev", },
+		{ name: "Hummus", health: -1, description: "Beyond Vile", color: "#fd7", rarity: "dev",},
 	]
 ];
 
@@ -431,13 +433,16 @@ function startTimer() {
 }
 
 function endScreen(text) {
+	player.dead = true
 	document.getElementById("endTitle").innerHTML = text
 	document.getElementById("floorDisplay").innerHTML = `Floor Reached: ${player.cycle}`
 	document.getElementById("enemiesKilledDisplay").innerHTML = `Enemies Killed: ${playerStats.enemiesKilled}`
-	document.getElementById("endScreen").style.display = "flex"
+	/* document.getElementById("endScreen").style.display = "flex" */
+	document.getElementById("endScreen").classList.add("show")
 }
 
 function playerMovement() {
+	if(player.dead == false){
 	if (keys["w"] || keys["arrowup"]) {
 		player.y -= player.speed;
 	}
@@ -449,6 +454,7 @@ function playerMovement() {
 	}
 	if (keys["d"] || keys["arrowright"]) {
 		player.x += player.speed;
+	}
 	}
 	drawGame();
 	requestAnimationFrame(playerMovement);
@@ -619,22 +625,24 @@ function findCurrentRoom() {
 // Projectiles
 
 function createProjectile() {
-	if (player.lastshot <= 0) {
-		if (mouse.down) {
-			playerProjectiles.push({
-				x: player.x + 25,
-				y: player.y + 25,
-				angle: Math.atan2(
-					mouse.y - (player.y + 25),
-					mouse.x - (player.x + 25),
-				),
-				speed: 15,
-			});
-			player.lastshot = player.firerate;
-			drawGame();
+	if(player.dead == false){
+		if (player.lastshot <= 0) {
+			if (mouse.down) {
+				playerProjectiles.push({
+					x: player.x + 25,
+					y: player.y + 25,
+					angle: Math.atan2(
+						mouse.y - (player.y + 25),
+						mouse.x - (player.x + 25),
+					),
+					speed: 15,
+				});
+				player.lastshot = player.firerate;
+				drawGame();
+			}
+		} else {
+			player.lastshot--;
 		}
-	} else {
-		player.lastshot--;
 	}
 
 	requestAnimationFrame(createProjectile);
