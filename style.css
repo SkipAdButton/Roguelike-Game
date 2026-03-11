@@ -98,9 +98,15 @@ body {
     height: 100vh;
     text-align: center;
     display: flex;
-    display: none;
+    visibility: hidden;
     flex-direction: column;
     user-select: none;
+	opacity: 0;
+	transition: opacity 1s;
+}
+#endScreen.show {
+	visibility: visible !important;
+	opacity: 1 !important;
 }
 #endScreen h1{
     color: white;
